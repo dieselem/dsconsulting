@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const initialClients = [
   {
@@ -203,6 +203,8 @@ const estadoConfig = {
   "pendiente": { label: "Pendiente", color: "#94A3B8", bg: "rgba(148,163,184,0.15)" },
 };
 
+const estadoOrder = ["pendiente", "en-progreso", "completado"];
+
 const etapaConfig = {
   "Diagnóstico": { color: "#60A5FA" },
   "Inicio": { color: "#FBBF24" },
@@ -214,8 +216,7 @@ const etapaConfig = {
 function getDaysUntil(dateStr) {
   const today = new Date();
   const target = new Date(dateStr);
-  const diff = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
-  return diff;
+  return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
 }
 
 function formatDate(dateStr) {
@@ -223,8 +224,50 @@ function formatDate(dateStr) {
   return d.toLocaleDateString("es-AR", { weekday: "short", day: "numeric", month: "short" });
 }
 
+function EditableText({ value, onSave, style, multiline }) {
+  const [editing, setEditing] = useState(false);
+  const [val, setVal] = useState(value);
+  const ref = useRef();
+
+  useEffect(() => { if (editing && ref.current) ref.current.focus(); }, [editing]);
+
+  function handleKey(e) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); save(); }
+    if (e.key === "Escape") { setVal(value); setEditing(false); }
+  }
+
+  function save() {
+    if (val.trim()) onSave(val.trim());
+    setEditing(false);
+  }
+
+  if (editing) {
+    const props = {
+      ref,
+      value: val,
+      onChange: e => setVal(e.target.value),
+      onBlur: save,
+      onKeyDown: handleKey,
+      style: {
+        background: "#1E2A3A", border: "1px solid #E8C547", borderRadius: 6,
+        color: "#E2E8F0", padding: "4px 8px", fontSize: "inherit",
+        fontFamily: "inherit", width: "100%", outline: "none",
+        lineHeight: 1.5, ...style
+      }
+    };
+    return multiline ? <textarea {...props} rows={2} style={{ ...props.style, resize: "none" }} /> : <input {...props} />;
+  }
+
+  return (
+    <span onClick={() => setEditing(true)} title="Clic para editar"
+      style={{ cursor: "text", borderBottom: "1px dashed #2D3748", paddingBottom: 1, ...style }}>
+      {value}
+    </span>
+  );
+}
+
 export default function PanelConsultoria() {
-  const STORAGE_KEY = "consultoria-v2";
+  const STORAGE_KEY = "consultoria-v3";
   const [clients, setClients] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -237,6 +280,8 @@ export default function PanelConsultoria() {
   const [procesando, setProcesando] = useState(false);
   const [updateResult, setUpdateResult] = useState(null);
   const [activeTab, setActiveTab] = useState("tareas");
+  const [nuevaTarea, setNuevaTarea] = useState({ mia: "", cliente: "" });
+  const [nuevaIniciativa, setNuevaIniciativa] = useState("");
 
   useEffect(() => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(clients)); } catch {}
@@ -247,26 +292,81 @@ export default function PanelConsultoria() {
   const totalClientes = clients.reduce((a, c) => a + c.tareasCliente.filter(t => !t.done).length, 0);
   const proxima = [...clients].sort((a, b) => new Date(a.proximaReunion) - new Date(b.proximaReunion))[0];
 
+  function updateClient(id, fn) {
+    setClients(prev => prev.map(c => c.id === id ? fn(c) : c));
+  }
+
+  function toggleTarea(clientId, field, idx) {
+    updateClient(clientId, c => ({
+      ...c, [field]: c[field].map((t, i) => i === idx ? { ...t, done: !t.done } : t)
+    }));
+  }
+
+  function editTarea(clientId, field, idx, texto) {
+    updateClient(clientId, c => ({
+      ...c, [field]: c[field].map((t, i) => i === idx ? { ...t, texto } : t)
+    }));
+  }
+
+  function deleteTarea(clientId, field, idx) {
+    updateClient(clientId, c => ({
+      ...c, [field]: c[field].filter((_, i) => i !== idx)
+    }));
+  }
+
+  function addTarea(clientId, field, texto) {
+    if (!texto.trim()) return;
+    updateClient(clientId, c => ({
+      ...c, [field]: [...c[field], { texto: texto.trim(), done: false }]
+    }));
+  }
+
+  function editIniciativa(clientId, idx, nombre) {
+    updateClient(clientId, c => ({
+      ...c, iniciativas: c.iniciativas.map((ini, i) => i === idx ? { ...ini, nombre } : ini)
+    }));
+  }
+
+  function cycleEstado(clientId, idx) {
+    updateClient(clientId, c => ({
+      ...c, iniciativas: c.iniciativas.map((ini, i) => {
+        if (i !== idx) return ini;
+        const next = estadoOrder[(estadoOrder.indexOf(ini.estado) + 1) % estadoOrder.length];
+        return { ...ini, estado: next };
+      })
+    }));
+  }
+
+  function deleteIniciativa(clientId, idx) {
+    updateClient(clientId, c => ({
+      ...c, iniciativas: c.iniciativas.filter((_, i) => i !== idx)
+    }));
+  }
+
+  function addIniciativa(clientId, nombre) {
+    if (!nombre.trim()) return;
+    updateClient(clientId, c => ({
+      ...c, iniciativas: [...c.iniciativas, { nombre: nombre.trim(), estado: "pendiente" }]
+    }));
+  }
+
   async function procesarUpdate() {
     if (!updateText.trim() || !selectedClient) return;
-    setProcesando(true);
-    setUpdateResult(null);
+    setProcesando(true); setUpdateResult(null);
     try {
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
+          model: "claude-sonnet-4-20250514", max_tokens: 1000,
           system: `Sos el asistente de consultoría de Diego Selem. Procesá el resumen de reunión y devolvé SOLO un JSON válido con esta estructura exacta, sin texto antes ni después:
 {"ultimoAvance":"string","misTareas":["tarea1","tarea2"],"tareasCliente":["tarea1","tarea2"],"focoReunion":"string"}`,
-          messages: [{ role: "user", content: `Cliente: ${selectedClient.name} (${selectedClient.rubro})\nEtapa: ${selectedClient.etapa}\nResumen: ${updateText}` }]
+          messages: [{ role: "user", content: `Cliente: ${selectedClient.name}\nEtapa: ${selectedClient.etapa}\nResumen: ${updateText}` }]
         })
       });
       const data = await res.json();
       const text = data.content?.find(b => b.type === "text")?.text || "";
-      const parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
-      setUpdateResult(parsed);
+      setUpdateResult(JSON.parse(text.replace(/```json|```/g, "").trim()));
     } catch {
       setUpdateResult({ error: "No se pudo procesar. Revisá el resumen e intentá de nuevo." });
     }
@@ -275,47 +375,49 @@ export default function PanelConsultoria() {
 
   function aplicarUpdate() {
     if (!updateResult || updateResult.error) return;
-    setClients(prev => prev.map(c => {
-      if (c.id !== selected) return c;
-      return {
-        ...c,
-        ultimoAvance: updateResult.ultimoAvance || c.ultimoAvance,
-        misTareas: [...updateResult.misTareas.map(t => ({ texto: t, done: false })), ...c.misTareas.filter(t => t.done)],
-        tareasCliente: [...updateResult.tareasCliente.map(t => ({ texto: t, done: false })), ...c.tareasCliente.filter(t => t.done)],
-        focoReunion: updateResult.focoReunion || c.focoReunion,
-      };
+    updateClient(selected, c => ({
+      ...c,
+      ultimoAvance: updateResult.ultimoAvance || c.ultimoAvance,
+      misTareas: [...updateResult.misTareas.map(t => ({ texto: t, done: false })), ...c.misTareas.filter(t => t.done)],
+      tareasCliente: [...updateResult.tareasCliente.map(t => ({ texto: t, done: false })), ...c.tareasCliente.filter(t => t.done)],
+      focoReunion: updateResult.focoReunion || c.focoReunion,
     }));
     setUpdateText(""); setUpdateResult(null); setView("detalle");
   }
 
-  function toggleTarea(clientId, tipo, idx) {
-    setClients(prev => prev.map(c => {
-      if (c.id !== clientId) return c;
-      const field = tipo === "mia" ? "misTareas" : "tareasCliente";
-      return { ...c, [field]: c[field].map((t, i) => i === idx ? { ...t, done: !t.done } : t) };
-    }));
-  }
+  const S = {
+    page: { minHeight: "100vh", background: "#0A0E1A", fontFamily: "'DM Sans', sans-serif", color: "#E2E8F0" },
+    header: { background: "#0D1220", borderBottom: "1px solid #1E2A3A", padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100 },
+    card: { background: "#0D1220", border: "1px solid #1E2A3A", borderRadius: 16, padding: 20 },
+    btn: { cursor: "pointer", border: "none", fontFamily: "inherit", transition: "all .2s" },
+    iconBtn: { cursor: "pointer", border: "none", background: "transparent", color: "#4A5568", fontSize: 14, padding: "2px 6px", borderRadius: 4, transition: "all .2s" },
+  };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0A0E1A", fontFamily: "'DM Sans', sans-serif", color: "#E2E8F0" }}>
+    <div style={S.page}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap');
         *{box-sizing:border-box;margin:0;padding:0}
         ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#2D3748;border-radius:2px}
         .ch{transition:transform .2s,box-shadow .2s;cursor:pointer}.ch:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.4)}
-        .btn{cursor:pointer;border:none;transition:all .2s;font-family:inherit}.btn:hover{opacity:.85}
+        .ib:hover{color:#E2E8F0!important;background:#2D3748!important}
+        .del:hover{color:#FF6B6B!important}
         .tab-active{border-bottom:2px solid #E8C547;color:#E8C547}
-        .ck:hover{opacity:.8;cursor:pointer}
         textarea{resize:none;outline:none;font-family:inherit}
-        textarea:focus{border-color:#E8C547!important}
+        input{outline:none;font-family:inherit}
+        textarea:focus,input:focus{border-color:#E8C547!important}
+        .add-row input{background:#131929;border:1px dashed #2D3748;border-radius:8px;padding:8px 12px;color:#E2E8F0;font-size:13px;width:100%}
+        .add-row input:focus{border-color:#E8C547!important;border-style:solid}
       `}</style>
 
       {/* Header */}
-      <div style={{ background: "#0D1220", borderBottom: "1px solid #1E2A3A", padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100 }}>
+      <div style={S.header}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           {view !== "panel" && (
-            <button className="btn" onClick={() => { setView(view === "update" ? "detalle" : "panel"); setUpdateResult(null); setUpdateText(""); }}
-              style={{ background: "#1E2A3A", color: "#94A3B8", padding: "6px 12px", borderRadius: 8, fontSize: 13 }}>← Volver</button>
+            <button style={{ ...S.btn, background: "#1E2A3A", color: "#94A3B8", padding: "6px 12px", borderRadius: 8, fontSize: 13 }}
+              onClick={() => { setView(view === "update" ? "detalle" : "panel"); setUpdateResult(null); setUpdateText(""); }}>
+              ← Volver
+            </button>
           )}
           <div>
             <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 18, fontWeight: 800, color: "#fff" }}>DS <span style={{ color: "#E8C547" }}>Consultoría</span></div>
@@ -358,7 +460,7 @@ export default function PanelConsultoria() {
               const dias = getDaysUntil(c.proximaReunion);
               return (
                 <div key={c.id} className="ch" onClick={() => { setSelected(c.id); setView("detalle"); setActiveTab("tareas"); }}
-                  style={{ background: "#0D1220", border: "1px solid #1E2A3A", borderRadius: 16, padding: 20, position: "relative", overflow: "hidden" }}>
+                  style={{ ...S.card, position: "relative", overflow: "hidden" }}>
                   <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: c.color }} />
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
                     <div style={{ fontSize: 28 }}>{c.icon}</div>
@@ -389,7 +491,7 @@ export default function PanelConsultoria() {
         {/* DETALLE */}
         {view === "detalle" && selectedClient && (
           <div>
-            <div style={{ background: "#0D1220", border: "1px solid #1E2A3A", borderRadius: 16, padding: 24, marginBottom: 16, position: "relative", overflow: "hidden" }}>
+            <div style={{ ...S.card, marginBottom: 16, position: "relative", overflow: "hidden" }}>
               <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, background: selectedClient.color }} />
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
                 <div>
@@ -399,8 +501,8 @@ export default function PanelConsultoria() {
                 </div>
                 <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
                   <div style={{ background: (etapaConfig[selectedClient.etapa]?.color || "#94A3B8") + "20", color: etapaConfig[selectedClient.etapa]?.color || "#94A3B8", fontSize: 12, fontWeight: 600, padding: "6px 14px", borderRadius: 20 }}>{selectedClient.etapa}</div>
-                  <button className="btn" onClick={() => setView("update")}
-                    style={{ background: "#E8C547", color: "#0A0E1A", padding: "6px 16px", borderRadius: 20, fontSize: 13, fontWeight: 700 }}>+ Actualizar reunión</button>
+                  <button style={{ ...S.btn, background: "#E8C547", color: "#0A0E1A", padding: "6px 16px", borderRadius: 20, fontSize: 13, fontWeight: 700 }}
+                    onClick={() => setView("update")}>+ Actualizar reunión</button>
                 </div>
               </div>
               <div style={{ marginTop: 16, background: "#131929", borderRadius: 12, padding: "12px 16px" }}>
@@ -414,47 +516,88 @@ export default function PanelConsultoria() {
               </div>
             </div>
 
+            {/* Tabs */}
             <div style={{ display: "flex", borderBottom: "1px solid #1E2A3A", marginBottom: 16 }}>
               {["tareas", "iniciativas"].map(tab => (
-                <button key={tab} className={`btn ${activeTab === tab ? "tab-active" : ""}`} onClick={() => setActiveTab(tab)}
-                  style={{ background: "transparent", color: activeTab === tab ? "#E8C547" : "#4A5568", padding: "10px 20px", fontSize: 13, fontWeight: 600, textTransform: "capitalize" }}>
+                <button key={tab} className={`${activeTab === tab ? "tab-active" : ""}`}
+                  onClick={() => setActiveTab(tab)}
+                  style={{ ...S.btn, background: "transparent", color: activeTab === tab ? "#E8C547" : "#4A5568", padding: "10px 20px", fontSize: 13, fontWeight: 600, textTransform: "capitalize" }}>
                   {tab === "tareas" ? "Tareas" : "Iniciativas"}
                 </button>
               ))}
             </div>
 
+            {/* TAREAS */}
             {activeTab === "tareas" && (
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                {[{ field: "misTareas", tipo: "mia", label: "MIS TAREAS", color: "#E8C547" }, { field: "tareasCliente", tipo: "cliente", label: "TAREAS DEL CLIENTE", color: "#4ECDC4" }].map(({ field, tipo, label, color }) => (
-                  <div key={field} style={{ background: "#0D1220", border: "1px solid #1E2A3A", borderRadius: 16, padding: 20 }}>
+                {[
+                  { field: "misTareas", label: "MIS TAREAS", color: "#E8C547", key: "mia" },
+                  { field: "tareasCliente", label: "TAREAS DEL CLIENTE", color: "#4ECDC4", key: "cliente" }
+                ].map(({ field, label, color, key }) => (
+                  <div key={field} style={S.card}>
                     <div style={{ fontSize: 11, color, fontWeight: 700, letterSpacing: "1px", marginBottom: 14 }}>{label}</div>
-                    {selectedClient[field].length === 0 && <div style={{ fontSize: 13, color: "#4A5568" }}>Sin tareas pendientes</div>}
+                    {selectedClient[field].length === 0 && <div style={{ fontSize: 13, color: "#4A5568", marginBottom: 12 }}>Sin tareas</div>}
                     {selectedClient[field].map((tarea, idx) => (
-                      <div key={idx} className="ck" onClick={() => toggleTarea(selectedClient.id, tipo, idx)}
-                        style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "8px 0", borderBottom: idx < selectedClient[field].length - 1 ? "1px solid #131929" : "none" }}>
-                        <div style={{ width: 18, height: 18, borderRadius: 5, border: tarea.done ? "none" : `2px solid ${color}`, background: tarea.done ? color : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>
+                      <div key={idx} style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "7px 0", borderBottom: idx < selectedClient[field].length - 1 ? "1px solid #131929" : "none" }}>
+                        {/* Checkbox */}
+                        <div onClick={() => toggleTarea(selectedClient.id, field, idx)}
+                          style={{ width: 18, height: 18, borderRadius: 5, border: tarea.done ? "none" : `2px solid ${color}`, background: tarea.done ? color : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2, cursor: "pointer" }}>
                           {tarea.done && <span style={{ fontSize: 11, color: "#0A0E1A", fontWeight: 700 }}>✓</span>}
                         </div>
-                        <span style={{ fontSize: 13, color: tarea.done ? "#4A5568" : "#CBD5E0", textDecoration: tarea.done ? "line-through" : "none", lineHeight: 1.5 }}>{tarea.texto}</span>
+                        {/* Texto editable */}
+                        <div style={{ flex: 1, fontSize: 13, color: tarea.done ? "#4A5568" : "#CBD5E0", textDecoration: tarea.done ? "line-through" : "none", lineHeight: 1.5 }}>
+                          <EditableText
+                            value={tarea.texto}
+                            onSave={(txt) => editTarea(selectedClient.id, field, idx, txt)}
+                            multiline
+                          />
+                        </div>
+                        {/* Borrar */}
+                        <button className="ib del" style={S.iconBtn} onClick={() => deleteTarea(selectedClient.id, field, idx)} title="Eliminar">✕</button>
                       </div>
                     ))}
+                    {/* Agregar tarea */}
+                    <div className="add-row" style={{ marginTop: 10 }}>
+                      <input
+                        placeholder="+ Nueva tarea..."
+                        value={nuevaTarea[key]}
+                        onChange={e => setNuevaTarea(p => ({ ...p, [key]: e.target.value }))}
+                        onKeyDown={e => {
+                          if (e.key === "Enter" && nuevaTarea[key].trim()) {
+                            addTarea(selectedClient.id, field, nuevaTarea[key]);
+                            setNuevaTarea(p => ({ ...p, [key]: "" }));
+                          }
+                        }}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
             )}
 
+            {/* INICIATIVAS */}
             {activeTab === "iniciativas" && (
-              <div style={{ background: "#0D1220", border: "1px solid #1E2A3A", borderRadius: 16, padding: 20 }}>
+              <div style={S.card}>
                 <div style={{ fontSize: 11, color: "#4A5568", fontWeight: 700, letterSpacing: "1px", marginBottom: 16 }}>INICIATIVAS DEL PROYECTO</div>
-                {selectedClient.iniciativas.length === 0 && <div style={{ fontSize: 13, color: "#4A5568" }}>Sin iniciativas cargadas. Ejecutá el prompt en el proyecto del cliente.</div>}
+                {selectedClient.iniciativas.length === 0 && <div style={{ fontSize: 13, color: "#4A5568", marginBottom: 12 }}>Sin iniciativas cargadas.</div>}
                 {selectedClient.iniciativas.map((ini, idx) => {
                   const cfg = estadoConfig[ini.estado] || estadoConfig["pendiente"];
                   const progress = ini.estado === "completado" ? 100 : ini.estado === "en-progreso" ? 50 : 8;
                   return (
                     <div key={idx} style={{ marginBottom: 14, paddingBottom: 14, borderBottom: idx < selectedClient.iniciativas.length - 1 ? "1px solid #131929" : "none" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 7 }}>
-                        <div style={{ fontSize: 13, fontWeight: 500 }}>{ini.nombre}</div>
-                        <div style={{ background: cfg.bg, color: cfg.color, fontSize: 11, fontWeight: 600, padding: "2px 10px", borderRadius: 20, whiteSpace: "nowrap" }}>{cfg.label}</div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginBottom: 7 }}>
+                        <div style={{ fontSize: 13, fontWeight: 500, flex: 1 }}>
+                          <EditableText value={ini.nombre} onSave={txt => editIniciativa(selectedClient.id, idx, txt)} />
+                        </div>
+                        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                          {/* Ciclar estado */}
+                          <div onClick={() => cycleEstado(selectedClient.id, idx)}
+                            style={{ background: cfg.bg, color: cfg.color, fontSize: 11, fontWeight: 600, padding: "2px 10px", borderRadius: 20, whiteSpace: "nowrap", cursor: "pointer" }}
+                            title="Clic para cambiar estado">
+                            {cfg.label}
+                          </div>
+                          <button className="ib del" style={S.iconBtn} onClick={() => deleteIniciativa(selectedClient.id, idx)} title="Eliminar">✕</button>
+                        </div>
                       </div>
                       <div style={{ background: "#131929", borderRadius: 4, height: 4, overflow: "hidden" }}>
                         <div style={{ background: cfg.color, height: "100%", width: `${progress}%`, borderRadius: 4, transition: "width .5s" }} />
@@ -462,6 +605,20 @@ export default function PanelConsultoria() {
                     </div>
                   );
                 })}
+                {/* Agregar iniciativa */}
+                <div className="add-row" style={{ marginTop: 10 }}>
+                  <input
+                    placeholder="+ Nueva iniciativa..."
+                    value={nuevaIniciativa}
+                    onChange={e => setNuevaIniciativa(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === "Enter" && nuevaIniciativa.trim()) {
+                        addIniciativa(selectedClient.id, nuevaIniciativa);
+                        setNuevaIniciativa("");
+                      }
+                    }}
+                  />
+                </div>
               </div>
             )}
           </div>
@@ -470,7 +627,7 @@ export default function PanelConsultoria() {
         {/* ACTUALIZAR */}
         {view === "update" && selectedClient && (
           <div>
-            <div style={{ background: "#0D1220", border: "1px solid #1E2A3A", borderRadius: 16, padding: 24, marginBottom: 16 }}>
+            <div style={{ ...S.card, marginBottom: 16 }}>
               <div style={{ fontSize: 11, color: "#4A5568", fontWeight: 700, letterSpacing: "1px", marginBottom: 6 }}>ACTUALIZAR REUNIÓN</div>
               <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 700, marginBottom: 16 }}>{selectedClient.icon} {selectedClient.name}</div>
               <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 10 }}>Contame qué pasó en la reunión. Qué hiciste, qué quedó pendiente, qué tiene que hacer el cliente y cuál es el foco de la próxima.</div>
@@ -478,15 +635,15 @@ export default function PanelConsultoria() {
                 placeholder="Ej: Hoy revisamos el dashboard, quedó funcionando. Le pedí que cargue las ventas de los 3 locales que faltan. La semana que viene vemos los números consolidados..."
                 style={{ width: "100%", background: "#131929", border: "1px solid #2D3748", borderRadius: 12, padding: 16, color: "#E2E8F0", fontSize: 14, lineHeight: 1.7, minHeight: 140, transition: "border-color .2s" }} />
               <div style={{ marginTop: 12 }}>
-                <button className="btn" onClick={procesarUpdate} disabled={procesando || !updateText.trim()}
-                  style={{ background: procesando ? "#2D3748" : "#E8C547", color: "#0A0E1A", padding: "10px 24px", borderRadius: 10, fontSize: 14, fontWeight: 700, opacity: (!updateText.trim() || procesando) ? 0.5 : 1 }}>
+                <button style={{ ...S.btn, background: procesando ? "#2D3748" : "#E8C547", color: "#0A0E1A", padding: "10px 24px", borderRadius: 10, fontSize: 14, fontWeight: 700, opacity: (!updateText.trim() || procesando) ? 0.5 : 1 }}
+                  onClick={procesarUpdate} disabled={procesando || !updateText.trim()}>
                   {procesando ? "Procesando..." : "Procesar con IA"}
                 </button>
               </div>
             </div>
 
             {updateResult && !updateResult.error && (
-              <div style={{ background: "#0D1220", border: "1px solid #34D399", borderRadius: 16, padding: 24 }}>
+              <div style={{ ...S.card, border: "1px solid #34D399" }}>
                 <div style={{ fontSize: 11, color: "#34D399", fontWeight: 700, letterSpacing: "1px", marginBottom: 16 }}>RESULTADO — REVISÁ Y CONFIRMÁ</div>
                 <div style={{ marginBottom: 14 }}>
                   <div style={{ fontSize: 11, color: "#4A5568", marginBottom: 6 }}>AVANCE</div>
@@ -496,9 +653,7 @@ export default function PanelConsultoria() {
                   {[{ key: "misTareas", label: "MIS TAREAS", color: "#E8C547" }, { key: "tareasCliente", label: "TAREAS CLIENTE", color: "#4ECDC4" }].map(({ key, label, color }) => (
                     <div key={key}>
                       <div style={{ fontSize: 11, color, marginBottom: 6 }}>{label}</div>
-                      {updateResult[key]?.map((t, i) => (
-                        <div key={i} style={{ background: "#131929", borderRadius: 8, padding: "8px 12px", fontSize: 13, marginBottom: 6, color: "#CBD5E0" }}>· {t}</div>
-                      ))}
+                      {updateResult[key]?.map((t, i) => <div key={i} style={{ background: "#131929", borderRadius: 8, padding: "8px 12px", fontSize: 13, marginBottom: 6, color: "#CBD5E0" }}>· {t}</div>)}
                     </div>
                   ))}
                 </div>
@@ -506,16 +661,12 @@ export default function PanelConsultoria() {
                   <div style={{ fontSize: 11, color: "#4A5568", marginBottom: 6 }}>FOCO PRÓXIMA REUNIÓN</div>
                   <div style={{ background: "#131929", borderRadius: 10, padding: 12, fontSize: 13, color: "#CBD5E0" }}>{updateResult.focoReunion}</div>
                 </div>
-                <button className="btn" onClick={aplicarUpdate}
-                  style={{ background: "#34D399", color: "#0A0E1A", padding: "10px 24px", borderRadius: 10, fontSize: 14, fontWeight: 700 }}>
+                <button style={{ ...S.btn, background: "#34D399", color: "#0A0E1A", padding: "10px 24px", borderRadius: 10, fontSize: 14, fontWeight: 700 }} onClick={aplicarUpdate}>
                   Aplicar actualización
                 </button>
               </div>
             )}
-
-            {updateResult?.error && (
-              <div style={{ background: "#1A1020", border: "1px solid #FF6B6B", borderRadius: 12, padding: 16, fontSize: 13, color: "#FF6B6B" }}>{updateResult.error}</div>
-            )}
+            {updateResult?.error && <div style={{ background: "#1A1020", border: "1px solid #FF6B6B", borderRadius: 12, padding: 16, fontSize: 13, color: "#FF6B6B" }}>{updateResult.error}</div>}
           </div>
         )}
       </div>
