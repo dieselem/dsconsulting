@@ -7,7 +7,8 @@ const initialClients = [
     rubro: "Retail indumentaria",
     via: "Directa",
     etapa: "Implementación",
-    color: "#E8C547",
+    color: "#0891B2",
+    accent: "#ECFEFF",
     icon: "👗",
     ultimoAvance: "Se presentaron a Mariela las dos plataformas desarrolladas con Claude Code (Administración y RRHH). Mariela validó con entusiasmo. Se unificó nómina de empleados para carga en Visma Way.",
     misTareas: [
@@ -36,12 +37,13 @@ const initialClients = [
   {
     id: 2,
     name: "Indesam",
-    rubro: "Gestión integral de residuos industriales y scrap metálico",
+    rubro: "Gestión de residuos industriales",
     via: "PCH",
     etapa: "En curso",
-    color: "#4ECDC4",
+    color: "#0D9488",
+    accent: "#F0FDFA",
     icon: "🏭",
-    ultimoAvance: "Reunión 3 completada: se trabajaron los 5 porqués en vivo. Emergieron verbos candidatos para el propósito (transformar, sostener, liberar, garantizar, ordenar) y la palabra espontánea 'seriedad'. Se definió traer propósitos redactados a la próxima reunión.",
+    ultimoAvance: "Reunión 3 completada: se trabajaron los 5 porqués en vivo. Emergieron verbos candidatos para el propósito (transformar, sostener, liberar, garantizar, ordenar) y la palabra espontánea 'seriedad'.",
     misTareas: [
       { texto: "Redactar 3-4 opciones de propósito formateadas (verbo infinitivo + para quién + para qué)", done: false },
       { texto: "Preparar guión de Acciones + Profit per X + Sandbox para la próxima reunión", done: false },
@@ -71,12 +73,13 @@ const initialClients = [
   {
     id: 3,
     name: "Gelform",
-    rubro: "Manufactura y comercialización de productos médicos/ortopédicos",
+    rubro: "Productos médicos y ortopédicos",
     via: "PCH",
     etapa: "Implementación",
-    color: "#A78BFA",
-    icon: "🧵",
-    ultimoAvance: "Auditoría completa del proceso de pedidos con entrevistas a administración, depósito y producción. Documento Word entregado con mapeo de proceso, 10 situaciones críticas y próximos pasos. Plataforma de gestión de caja en uso por Silvana y Camila.",
+    color: "#7C3AED",
+    accent: "#F5F3FF",
+    icon: "🩺",
+    ultimoAvance: "Auditoría completa del proceso de pedidos con entrevistas a administración, depósito y producción. Plataforma de gestión de caja en uso por Silvana y Camila.",
     misTareas: [
       { texto: "Entrevistar a vendedores para completar el mapeo del proceso de pedidos", done: false },
       { texto: "Completar entrevista con Gustavo (grabación se cortó parcialmente)", done: false },
@@ -96,7 +99,7 @@ const initialClients = [
       { texto: "Karina: avanzar con auditoría de stock externa (ya en proceso)", done: false },
     ],
     proximaReunion: "2026-06-10",
-    focoReunion: "Entrevista con equipo de vendedores + validación del proceso rediseñado de pedidos*",
+    focoReunion: "Entrevista con vendedores + validación del proceso rediseñado de pedidos",
     iniciativas: [
       { nombre: "Plataforma de gestión de caja", estado: "completado" },
       { nombre: "Auditoría y mapeo del proceso de pedidos", estado: "completado" },
@@ -115,7 +118,8 @@ const initialClients = [
     rubro: "Franquicia inmobiliaria",
     via: "Directa",
     etapa: "Diagnóstico",
-    color: "#F97316",
+    color: "#DC2626",
+    accent: "#FEF2F2",
     icon: "🏢",
     ultimoAvance: "Entrevistas realizadas con Jessica (marketing/pauta) y César (RRHH). Hallazgos procesados y validados.",
     misTareas: [
@@ -154,14 +158,15 @@ const initialClients = [
     rubro: "Educación y experiencias infantiles",
     via: "Propio",
     etapa: "Implementación",
-    color: "#34D399",
+    color: "#059669",
+    accent: "#ECFDF5",
     icon: "🦋",
     ultimoAvance: "Se publicó la plataforma con agenda online (React + Supabase vía Lovable). A la espera del alta de los 12 profes.",
     misTareas: [
       { texto: "Enviar mensaje al grupo de profes con link, paso a paso y deadline de 48 hs", done: false },
       { texto: "Cerrar a mano las altas de profes que falten al vencer el plazo*", done: false },
       { texto: "Resolver presentación de factura C (taller Museo del Juguete, OC 1529) en portal San Isidro", done: false },
-      { texto: "Avanzar integración con Google Calendar (próximo paso pendiente)*", done: false },
+      { texto: "Avanzar integración con Google Calendar*", done: false },
       { texto: "Construir módulo de honorario extraordinario para pagos no asociados a eventos*", done: false },
     ],
     tareasCliente: [
@@ -175,9 +180,9 @@ const initialClients = [
       { nombre: "Integración con Google Calendar", estado: "pendiente" },
       { nombre: "Módulo honorario extraordinario", estado: "pendiente" },
       { nombre: "Alianza con Ecovita", estado: "en-progreso" },
-      { nombre: "Plan de alianzas institucionales (escuelas, municipios, empresas/RSE)", estado: "pendiente" },
-      { nombre: "Diseño de formatos replicables / modelo de expansión territorial", estado: "pendiente" },
-      { nombre: "Activos de contenido escalable (obra, canción Ligia Piro, productos/kits)", estado: "pendiente" },
+      { nombre: "Plan de alianzas institucionales", estado: "pendiente" },
+      { nombre: "Diseño de formatos replicables / expansión territorial", estado: "pendiente" },
+      { nombre: "Activos de contenido escalable", estado: "pendiente" },
     ],
   },
   {
@@ -186,7 +191,8 @@ const initialClients = [
     rubro: "Industria",
     via: "PCH",
     etapa: "En curso",
-    color: "#FF6B6B",
+    color: "#D97706",
+    accent: "#FFFBEB",
     icon: "⚙️",
     ultimoAvance: "Pendiente de carga. Ejecutá el prompt en el proyecto de Coch para completar.",
     misTareas: [],
@@ -198,19 +204,19 @@ const initialClients = [
 ];
 
 const estadoConfig = {
-  "completado": { label: "Completado", color: "#34D399", bg: "rgba(52,211,153,0.15)" },
-  "en-progreso": { label: "En progreso", color: "#F97316", bg: "rgba(249,115,22,0.15)" },
-  "pendiente": { label: "Pendiente", color: "#94A3B8", bg: "rgba(148,163,184,0.15)" },
+  "completado": { label: "Completado", color: "#059669", bg: "#ECFDF5", dot: "#059669" },
+  "en-progreso": { label: "En progreso", color: "#D97706", bg: "#FFFBEB", dot: "#D97706" },
+  "pendiente": { label: "Pendiente", color: "#94A3B8", bg: "#F8FAFC", dot: "#CBD5E1" },
 };
 
 const estadoOrder = ["pendiente", "en-progreso", "completado"];
 
 const etapaConfig = {
-  "Diagnóstico": { color: "#60A5FA" },
-  "Inicio": { color: "#FBBF24" },
-  "En curso": { color: "#F97316" },
-  "Implementación": { color: "#34D399" },
-  "Seguimiento": { color: "#A78BFA" },
+  "Diagnóstico": { color: "#2563EB", bg: "#EFF6FF" },
+  "Inicio": { color: "#D97706", bg: "#FFFBEB" },
+  "En curso": { color: "#0891B2", bg: "#ECFEFF" },
+  "Implementación": { color: "#059669", bg: "#ECFDF5" },
+  "Seguimiento": { color: "#7C3AED", bg: "#F5F3FF" },
 };
 
 function getDaysUntil(dateStr) {
@@ -224,7 +230,7 @@ function formatDate(dateStr) {
   return d.toLocaleDateString("es-AR", { weekday: "short", day: "numeric", month: "short" });
 }
 
-function EditableText({ value, onSave, style, multiline }) {
+function EditableText({ value, onSave, multiline }) {
   const [editing, setEditing] = useState(false);
   const [val, setVal] = useState(value);
   const ref = useRef();
@@ -242,37 +248,28 @@ function EditableText({ value, onSave, style, multiline }) {
   }
 
   if (editing) {
-    const props = {
-      ref,
-      value: val,
+    const base = {
+      ref, value: val,
       onChange: e => setVal(e.target.value),
-      onBlur: save,
-      onKeyDown: handleKey,
-      style: {
-        background: "#1E2A3A", border: "1px solid #E8C547", borderRadius: 6,
-        color: "#E2E8F0", padding: "4px 8px", fontSize: "inherit",
-        fontFamily: "inherit", width: "100%", outline: "none",
-        lineHeight: 1.5, ...style
-      }
+      onBlur: save, onKeyDown: handleKey,
+      style: { background: "#F0FDFA", border: "1.5px solid #0D9488", borderRadius: 6, color: "#0F172A", padding: "4px 8px", fontSize: "inherit", fontFamily: "inherit", width: "100%", outline: "none", lineHeight: 1.5 }
     };
-    return multiline ? <textarea {...props} rows={2} style={{ ...props.style, resize: "none" }} /> : <input {...props} />;
+    return multiline ? <textarea {...base} rows={2} style={{ ...base.style, resize: "none" }} /> : <input {...base} />;
   }
 
   return (
     <span onClick={() => setEditing(true)} title="Clic para editar"
-      style={{ cursor: "text", borderBottom: "1px dashed #2D3748", paddingBottom: 1, ...style }}>
+      style={{ cursor: "text", borderBottom: "1.5px dashed #CBD5E1", paddingBottom: 1 }}>
       {value}
     </span>
   );
 }
 
 export default function PanelConsultoria() {
-  const STORAGE_KEY = "consultoria-v3";
+  const STORAGE_KEY = "consultoria-v4";
   const [clients, setClients] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : initialClients;
-    } catch { return initialClients; }
+    try { const s = localStorage.getItem(STORAGE_KEY); return s ? JSON.parse(s) : initialClients; }
+    catch { return initialClients; }
   });
   const [selected, setSelected] = useState(null);
   const [view, setView] = useState("panel");
@@ -287,95 +284,44 @@ export default function PanelConsultoria() {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(clients)); } catch {}
   }, [clients]);
 
-  const selectedClient = clients.find(c => c.id === selected);
+  const sc = clients.find(c => c.id === selected);
   const totalMias = clients.reduce((a, c) => a + c.misTareas.filter(t => !t.done).length, 0);
   const totalClientes = clients.reduce((a, c) => a + c.tareasCliente.filter(t => !t.done).length, 0);
   const proxima = [...clients].sort((a, b) => new Date(a.proximaReunion) - new Date(b.proximaReunion))[0];
 
-  function updateClient(id, fn) {
-    setClients(prev => prev.map(c => c.id === id ? fn(c) : c));
-  }
-
-  function toggleTarea(clientId, field, idx) {
-    updateClient(clientId, c => ({
-      ...c, [field]: c[field].map((t, i) => i === idx ? { ...t, done: !t.done } : t)
-    }));
-  }
-
-  function editTarea(clientId, field, idx, texto) {
-    updateClient(clientId, c => ({
-      ...c, [field]: c[field].map((t, i) => i === idx ? { ...t, texto } : t)
-    }));
-  }
-
-  function deleteTarea(clientId, field, idx) {
-    updateClient(clientId, c => ({
-      ...c, [field]: c[field].filter((_, i) => i !== idx)
-    }));
-  }
-
-  function addTarea(clientId, field, texto) {
-    if (!texto.trim()) return;
-    updateClient(clientId, c => ({
-      ...c, [field]: [...c[field], { texto: texto.trim(), done: false }]
-    }));
-  }
-
-  function editIniciativa(clientId, idx, nombre) {
-    updateClient(clientId, c => ({
-      ...c, iniciativas: c.iniciativas.map((ini, i) => i === idx ? { ...ini, nombre } : ini)
-    }));
-  }
-
-  function cycleEstado(clientId, idx) {
-    updateClient(clientId, c => ({
-      ...c, iniciativas: c.iniciativas.map((ini, i) => {
-        if (i !== idx) return ini;
-        const next = estadoOrder[(estadoOrder.indexOf(ini.estado) + 1) % estadoOrder.length];
-        return { ...ini, estado: next };
-      })
-    }));
-  }
-
-  function deleteIniciativa(clientId, idx) {
-    updateClient(clientId, c => ({
-      ...c, iniciativas: c.iniciativas.filter((_, i) => i !== idx)
-    }));
-  }
-
-  function addIniciativa(clientId, nombre) {
-    if (!nombre.trim()) return;
-    updateClient(clientId, c => ({
-      ...c, iniciativas: [...c.iniciativas, { nombre: nombre.trim(), estado: "pendiente" }]
-    }));
-  }
+  function upd(id, fn) { setClients(p => p.map(c => c.id === id ? fn(c) : c)); }
+  function toggleTarea(id, field, idx) { upd(id, c => ({ ...c, [field]: c[field].map((t, i) => i === idx ? { ...t, done: !t.done } : t) })); }
+  function editTarea(id, field, idx, texto) { upd(id, c => ({ ...c, [field]: c[field].map((t, i) => i === idx ? { ...t, texto } : t) })); }
+  function deleteTarea(id, field, idx) { upd(id, c => ({ ...c, [field]: c[field].filter((_, i) => i !== idx) })); }
+  function addTarea(id, field, texto) { if (!texto.trim()) return; upd(id, c => ({ ...c, [field]: [...c[field], { texto: texto.trim(), done: false }] })); }
+  function editIni(id, idx, nombre) { upd(id, c => ({ ...c, iniciativas: c.iniciativas.map((ini, i) => i === idx ? { ...ini, nombre } : ini) })); }
+  function cycleEstado(id, idx) { upd(id, c => ({ ...c, iniciativas: c.iniciativas.map((ini, i) => i !== idx ? ini : { ...ini, estado: estadoOrder[(estadoOrder.indexOf(ini.estado) + 1) % estadoOrder.length] }) })); }
+  function deleteIni(id, idx) { upd(id, c => ({ ...c, iniciativas: c.iniciativas.filter((_, i) => i !== idx) })); }
+  function addIni(id, nombre) { if (!nombre.trim()) return; upd(id, c => ({ ...c, iniciativas: [...c.iniciativas, { nombre: nombre.trim(), estado: "pendiente" }] })); }
 
   async function procesarUpdate() {
-    if (!updateText.trim() || !selectedClient) return;
+    if (!updateText.trim() || !sc) return;
     setProcesando(true); setUpdateResult(null);
     try {
       const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514", max_tokens: 1000,
-          system: `Sos el asistente de consultoría de Diego Selem. Procesá el resumen de reunión y devolvé SOLO un JSON válido con esta estructura exacta, sin texto antes ni después:
-{"ultimoAvance":"string","misTareas":["tarea1","tarea2"],"tareasCliente":["tarea1","tarea2"],"focoReunion":"string"}`,
-          messages: [{ role: "user", content: `Cliente: ${selectedClient.name}\nEtapa: ${selectedClient.etapa}\nResumen: ${updateText}` }]
+          system: `Sos el asistente de consultoría de Diego Selem. Procesá el resumen de reunión y devolvé SOLO un JSON válido con esta estructura, sin texto antes ni después:
+{"ultimoAvance":"string","misTareas":["tarea1"],"tareasCliente":["tarea1"],"focoReunion":"string"}`,
+          messages: [{ role: "user", content: `Cliente: ${sc.name}\nEtapa: ${sc.etapa}\nResumen: ${updateText}` }]
         })
       });
       const data = await res.json();
       const text = data.content?.find(b => b.type === "text")?.text || "";
       setUpdateResult(JSON.parse(text.replace(/```json|```/g, "").trim()));
-    } catch {
-      setUpdateResult({ error: "No se pudo procesar. Revisá el resumen e intentá de nuevo." });
-    }
+    } catch { setUpdateResult({ error: "No se pudo procesar. Revisá el resumen e intentá de nuevo." }); }
     setProcesando(false);
   }
 
   function aplicarUpdate() {
     if (!updateResult || updateResult.error) return;
-    updateClient(selected, c => ({
+    upd(selected, c => ({
       ...c,
       ultimoAvance: updateResult.ultimoAvance || c.ultimoAvance,
       misTareas: [...updateResult.misTareas.map(t => ({ texto: t, done: false })), ...c.misTareas.filter(t => t.done)],
@@ -385,102 +331,115 @@ export default function PanelConsultoria() {
     setUpdateText(""); setUpdateResult(null); setView("detalle");
   }
 
-  const S = {
-    page: { minHeight: "100vh", background: "#0A0E1A", fontFamily: "'DM Sans', sans-serif", color: "#E2E8F0" },
-    header: { background: "#0D1220", borderBottom: "1px solid #1E2A3A", padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100 },
-    card: { background: "#0D1220", border: "1px solid #1E2A3A", borderRadius: 16, padding: 20 },
-    btn: { cursor: "pointer", border: "none", fontFamily: "inherit", transition: "all .2s" },
-    iconBtn: { cursor: "pointer", border: "none", background: "transparent", color: "#4A5568", fontSize: 14, padding: "2px 6px", borderRadius: 4, transition: "all .2s" },
-  };
-
   return (
-    <div style={S.page}>
+    <div style={{ minHeight: "100vh", background: "#F8FAFC", fontFamily: "'Outfit', sans-serif", color: "#0F172A" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap');
         *{box-sizing:border-box;margin:0;padding:0}
-        ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#2D3748;border-radius:2px}
-        .ch{transition:transform .2s,box-shadow .2s;cursor:pointer}.ch:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.4)}
-        .ib:hover{color:#E2E8F0!important;background:#2D3748!important}
-        .del:hover{color:#FF6B6B!important}
-        .tab-active{border-bottom:2px solid #E8C547;color:#E8C547}
-        textarea{resize:none;outline:none;font-family:inherit}
-        input{outline:none;font-family:inherit}
-        textarea:focus,input:focus{border-color:#E8C547!important}
-        .add-row input{background:#131929;border:1px dashed #2D3748;border-radius:8px;padding:8px 12px;color:#E2E8F0;font-size:13px;width:100%}
-        .add-row input:focus{border-color:#E8C547!important;border-style:solid}
+        ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:3px}
+        .card{background:#fff;border:1px solid #E2E8F0;border-radius:20px;transition:all .2s}
+        .card-hover:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.08);border-color:#BAE6FD;cursor:pointer}
+        .btn{cursor:pointer;border:none;font-family:inherit;transition:all .2s}
+        .btn:hover{opacity:.88}
+        .del-btn{cursor:pointer;border:none;background:transparent;color:#CBD5E1;font-size:13px;padding:2px 6px;border-radius:4px;transition:all .2s;font-family:inherit}
+        .del-btn:hover{color:#EF4444;background:#FEF2F2}
+        .tab{cursor:pointer;border:none;background:transparent;font-family:inherit;padding:10px 20px;font-size:13px;font-weight:600;color:#94A3B8;transition:all .2s;border-bottom:2px solid transparent}
+        .tab:hover{color:#0D9488}
+        .tab-active{color:#0D9488;border-bottom-color:#0D9488}
+        .add-input{width:100%;background:#F8FAFC;border:1.5px dashed #CBD5E1;border-radius:10px;padding:9px 14px;color:#64748B;font-size:13px;font-family:inherit;outline:none;transition:all .2s}
+        .add-input:focus{border-color:#0D9488;border-style:solid;background:#F0FDFA;color:#0F172A}
+        textarea{font-family:inherit;outline:none;resize:none}
+        input{font-family:inherit;outline:none}
       `}</style>
 
       {/* Header */}
-      <div style={S.header}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <div style={{ background: "#fff", borderBottom: "1px solid #E2E8F0", padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, height: 64 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           {view !== "panel" && (
-            <button style={{ ...S.btn, background: "#1E2A3A", color: "#94A3B8", padding: "6px 12px", borderRadius: 8, fontSize: 13 }}
-              onClick={() => { setView(view === "update" ? "detalle" : "panel"); setUpdateResult(null); setUpdateText(""); }}>
+            <button className="btn" onClick={() => { setView(view === "update" ? "detalle" : "panel"); setUpdateResult(null); setUpdateText(""); }}
+              style={{ background: "#F1F5F9", color: "#64748B", padding: "7px 14px", borderRadius: 10, fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 6 }}>
               ← Volver
             </button>
           )}
-          <div>
-            <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 18, fontWeight: 800, color: "#fff" }}>DS <span style={{ color: "#E8C547" }}>Consultoría</span></div>
-            <div style={{ fontSize: 11, color: "#4A5568", fontWeight: 500, letterSpacing: ".5px" }}>PANEL DE CONTROL</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 36, height: 36, background: "linear-gradient(135deg, #0D9488, #0891B2)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 800, color: "#fff" }}>D</div>
+            <div>
+              <div style={{ fontSize: 16, fontWeight: 800, color: "#0F172A", letterSpacing: "-0.3px" }}>DS <span style={{ color: "#0D9488" }}>Consultoría</span></div>
+              <div style={{ fontSize: 10, color: "#94A3B8", fontWeight: 500, letterSpacing: "1px", textTransform: "uppercase" }}>Panel de Control</div>
+            </div>
           </div>
         </div>
-        <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 11, color: "#4A5568" }}>MIS TAREAS</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#E8C547" }}>{totalMias}</div>
+        <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#F59E0B" }} />
+            <div>
+              <div style={{ fontSize: 11, color: "#94A3B8", fontWeight: 500 }}>Mis tareas</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: "#0F172A", lineHeight: 1 }}>{totalMias}</div>
+            </div>
           </div>
-          <div style={{ width: 1, height: 32, background: "#1E2A3A" }} />
-          <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 11, color: "#4A5568" }}>CLIENTES</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#4ECDC4" }}>{totalClientes}</div>
+          <div style={{ width: 1, height: 28, background: "#E2E8F0" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#0D9488" }} />
+            <div>
+              <div style={{ fontSize: 11, color: "#94A3B8", fontWeight: 500 }}>Pendientes clientes</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: "#0F172A", lineHeight: 1 }}>{totalClientes}</div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div style={{ maxWidth: 920, margin: "0 auto", padding: "24px 16px" }}>
+      <div style={{ maxWidth: 960, margin: "0 auto", padding: "32px 24px" }}>
 
-        {/* PANEL */}
+        {/* PANEL GENERAL */}
         {view === "panel" && <>
           {proxima && (
-            <div style={{ background: "linear-gradient(135deg,#1A2035,#1E2A3A)", border: "1px solid #2D3748", borderRadius: 16, padding: "16px 20px", marginBottom: 24, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ background: "linear-gradient(135deg, #0D9488, #0891B2)", borderRadius: 20, padding: "20px 28px", marginBottom: 32, display: "flex", justifyContent: "space-between", alignItems: "center", boxShadow: "0 8px 32px rgba(13,148,136,.25)" }}>
               <div>
-                <div style={{ fontSize: 11, color: "#4A5568", fontWeight: 600, letterSpacing: "1px", marginBottom: 4 }}>PRÓXIMA REUNIÓN</div>
-                <div style={{ fontSize: 15, fontWeight: 600 }}>{proxima.name} <span style={{ color: "#94A3B8", fontWeight: 400 }}>— {proxima.focoReunion}</span></div>
+                <div style={{ fontSize: 11, color: "rgba(255,255,255,.7)", fontWeight: 600, letterSpacing: "1px", textTransform: "uppercase", marginBottom: 4 }}>Próxima reunión</div>
+                <div style={{ fontSize: 17, fontWeight: 700, color: "#fff" }}>{proxima.name}</div>
+                <div style={{ fontSize: 13, color: "rgba(255,255,255,.8)", marginTop: 2 }}>{proxima.focoReunion}</div>
               </div>
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: 20, fontWeight: 700, color: "#E8C547" }}>{formatDate(proxima.proximaReunion)}</div>
-                <div style={{ fontSize: 12, color: "#4A5568" }}>en {getDaysUntil(proxima.proximaReunion)} días</div>
+                <div style={{ fontSize: 26, fontWeight: 800, color: "#fff" }}>{formatDate(proxima.proximaReunion)}</div>
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,.7)", marginTop: 2 }}>en {getDaysUntil(proxima.proximaReunion)} días</div>
               </div>
             </div>
           )}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(265px,1fr))", gap: 16 }}>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
             {clients.map(c => {
               const pm = c.misTareas.filter(t => !t.done).length;
               const pc = c.tareasCliente.filter(t => !t.done).length;
               const dias = getDaysUntil(c.proximaReunion);
+              const etapa = etapaConfig[c.etapa] || { color: "#64748B", bg: "#F1F5F9" };
               return (
-                <div key={c.id} className="ch" onClick={() => { setSelected(c.id); setView("detalle"); setActiveTab("tareas"); }}
-                  style={{ ...S.card, position: "relative", overflow: "hidden" }}>
-                  <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: c.color }} />
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-                    <div style={{ fontSize: 28 }}>{c.icon}</div>
-                    <div style={{ background: (etapaConfig[c.etapa]?.color || "#94A3B8") + "20", color: etapaConfig[c.etapa]?.color || "#94A3B8", fontSize: 11, fontWeight: 600, padding: "3px 10px", borderRadius: 20 }}>{c.etapa}</div>
-                  </div>
-                  <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 15, fontWeight: 700, marginBottom: 2 }}>{c.name}</div>
-                  <div style={{ fontSize: 12, color: "#4A5568", marginBottom: 14 }}>{c.rubro} · {c.via}</div>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
-                    <div style={{ background: "#131929", borderRadius: 10, padding: "8px 12px" }}>
-                      <div style={{ fontSize: 10, color: "#4A5568", marginBottom: 2 }}>MIS TAREAS</div>
-                      <div style={{ fontSize: 22, fontWeight: 700, color: pm > 0 ? "#E8C547" : "#34D399" }}>{pm}</div>
+                <div key={c.id} className="card card-hover" onClick={() => { setSelected(c.id); setView("detalle"); setActiveTab("tareas"); }}
+                  style={{ padding: 0, overflow: "hidden" }}>
+                  {/* Color bar */}
+                  <div style={{ height: 5, background: c.color }} />
+                  <div style={{ padding: "20px 22px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+                      <div style={{ width: 44, height: 44, background: c.accent, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>{c.icon}</div>
+                      <div style={{ background: etapa.bg, color: etapa.color, fontSize: 11, fontWeight: 700, padding: "4px 12px", borderRadius: 20, letterSpacing: "0.3px" }}>{c.etapa}</div>
                     </div>
-                    <div style={{ background: "#131929", borderRadius: 10, padding: "8px 12px" }}>
-                      <div style={{ fontSize: 10, color: "#4A5568", marginBottom: 2 }}>CLIENTE</div>
-                      <div style={{ fontSize: 22, fontWeight: 700, color: pc > 0 ? "#4ECDC4" : "#34D399" }}>{pc}</div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: "#0F172A", marginBottom: 3, letterSpacing: "-0.2px" }}>{c.name}</div>
+                    <div style={{ fontSize: 12, color: "#94A3B8", marginBottom: 18 }}>{c.rubro} · {c.via}</div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
+                      <div style={{ background: pm > 0 ? "#FFFBEB" : "#F0FDF4", borderRadius: 12, padding: "10px 14px" }}>
+                        <div style={{ fontSize: 10, color: "#94A3B8", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 2 }}>Mis tareas</div>
+                        <div style={{ fontSize: 24, fontWeight: 800, color: pm > 0 ? "#D97706" : "#059669" }}>{pm}</div>
+                      </div>
+                      <div style={{ background: pc > 0 ? "#F0FDFA" : "#F0FDF4", borderRadius: 12, padding: "10px 14px" }}>
+                        <div style={{ fontSize: 10, color: "#94A3B8", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 2 }}>Cliente</div>
+                        <div style={{ fontSize: 24, fontWeight: 800, color: pc > 0 ? "#0D9488" : "#059669" }}>{pc}</div>
+                      </div>
                     </div>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <div style={{ fontSize: 12, color: "#4A5568" }}>📅 {formatDate(c.proximaReunion)}</div>
-                    <div style={{ fontSize: 11, color: dias <= 2 ? "#FF6B6B" : "#4A5568" }}>{dias === 0 ? "¡Hoy!" : dias < 0 ? "Vencida" : `${dias}d`}</div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: 14, borderTop: "1px solid #F1F5F9" }}>
+                      <div style={{ fontSize: 12, color: "#64748B" }}>📅 {formatDate(c.proximaReunion)}</div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: dias <= 2 ? "#EF4444" : "#94A3B8", background: dias <= 2 ? "#FEF2F2" : "#F8FAFC", padding: "2px 10px", borderRadius: 20 }}>
+                        {dias === 0 ? "¡Hoy!" : dias < 0 ? "Vencida" : `${dias}d`}
+                      </div>
+                    </div>
                   </div>
                 </div>
               );
@@ -489,85 +448,77 @@ export default function PanelConsultoria() {
         </>}
 
         {/* DETALLE */}
-        {view === "detalle" && selectedClient && (
+        {view === "detalle" && sc && (
           <div>
-            <div style={{ ...S.card, marginBottom: 16, position: "relative", overflow: "hidden" }}>
-              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, background: selectedClient.color }} />
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 12 }}>
-                <div>
-                  <div style={{ fontSize: 30, marginBottom: 4 }}>{selectedClient.icon}</div>
-                  <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 22, fontWeight: 800 }}>{selectedClient.name}</div>
-                  <div style={{ fontSize: 13, color: "#4A5568" }}>{selectedClient.rubro} · Vía {selectedClient.via}</div>
+            <div className="card" style={{ padding: 28, marginBottom: 20, overflow: "hidden", position: "relative" }}>
+              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 5, background: sc.color }} />
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16 }}>
+                <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+                  <div style={{ width: 52, height: 52, background: sc.accent, borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, flexShrink: 0 }}>{sc.icon}</div>
+                  <div>
+                    <div style={{ fontSize: 22, fontWeight: 800, color: "#0F172A", letterSpacing: "-0.4px" }}>{sc.name}</div>
+                    <div style={{ fontSize: 13, color: "#94A3B8", marginTop: 2 }}>{sc.rubro} · Vía {sc.via}</div>
+                    <div style={{ display: "inline-block", background: (etapaConfig[sc.etapa]?.bg || "#F1F5F9"), color: (etapaConfig[sc.etapa]?.color || "#64748B"), fontSize: 11, fontWeight: 700, padding: "3px 12px", borderRadius: 20, marginTop: 8 }}>{sc.etapa}</div>
+                  </div>
                 </div>
-                <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-                  <div style={{ background: (etapaConfig[selectedClient.etapa]?.color || "#94A3B8") + "20", color: etapaConfig[selectedClient.etapa]?.color || "#94A3B8", fontSize: 12, fontWeight: 600, padding: "6px 14px", borderRadius: 20 }}>{selectedClient.etapa}</div>
-                  <button style={{ ...S.btn, background: "#E8C547", color: "#0A0E1A", padding: "6px 16px", borderRadius: 20, fontSize: 13, fontWeight: 700 }}
-                    onClick={() => setView("update")}>+ Actualizar reunión</button>
-                </div>
+                <button className="btn" onClick={() => setView("update")}
+                  style={{ background: "linear-gradient(135deg, #0D9488, #0891B2)", color: "#fff", padding: "10px 20px", borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: "0 4px 16px rgba(13,148,136,.3)" }}>
+                  + Actualizar reunión
+                </button>
               </div>
-              <div style={{ marginTop: 16, background: "#131929", borderRadius: 12, padding: "12px 16px" }}>
-                <div style={{ fontSize: 11, color: "#4A5568", marginBottom: 4, fontWeight: 600 }}>ÚLTIMO AVANCE</div>
-                <div style={{ fontSize: 13, color: "#CBD5E0", lineHeight: 1.6 }}>{selectedClient.ultimoAvance}</div>
+
+              <div style={{ marginTop: 20, background: "#F8FAFC", borderRadius: 14, padding: "14px 18px", borderLeft: `4px solid ${sc.color}` }}>
+                <div style={{ fontSize: 11, color: "#94A3B8", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 6 }}>Último avance</div>
+                <div style={{ fontSize: 13, color: "#334155", lineHeight: 1.7 }}>{sc.ultimoAvance}</div>
               </div>
-              <div style={{ marginTop: 12, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-                <div style={{ fontSize: 13, color: "#4A5568" }}>📅 Próxima reunión:</div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#E8C547" }}>{formatDate(selectedClient.proximaReunion)}</div>
-                <div style={{ fontSize: 12, color: "#4A5568" }}>— {selectedClient.focoReunion}</div>
+
+              <div style={{ marginTop: 14, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+                <div style={{ fontSize: 13, color: "#64748B" }}>📅 Próxima reunión:</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: sc.color }}>{formatDate(sc.proximaReunion)}</div>
+                <div style={{ fontSize: 12, color: "#94A3B8" }}>— {sc.focoReunion}</div>
               </div>
             </div>
 
-            {/* Tabs */}
-            <div style={{ display: "flex", borderBottom: "1px solid #1E2A3A", marginBottom: 16 }}>
+            <div style={{ display: "flex", borderBottom: "1px solid #E2E8F0", marginBottom: 20 }}>
               {["tareas", "iniciativas"].map(tab => (
-                <button key={tab} className={`${activeTab === tab ? "tab-active" : ""}`}
-                  onClick={() => setActiveTab(tab)}
-                  style={{ ...S.btn, background: "transparent", color: activeTab === tab ? "#E8C547" : "#4A5568", padding: "10px 20px", fontSize: 13, fontWeight: 600, textTransform: "capitalize" }}>
+                <button key={tab} className={`tab ${activeTab === tab ? "tab-active" : ""}`} onClick={() => setActiveTab(tab)}>
                   {tab === "tareas" ? "Tareas" : "Iniciativas"}
                 </button>
               ))}
             </div>
 
-            {/* TAREAS */}
             {activeTab === "tareas" && (
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
                 {[
-                  { field: "misTareas", label: "MIS TAREAS", color: "#E8C547", key: "mia" },
-                  { field: "tareasCliente", label: "TAREAS DEL CLIENTE", color: "#4ECDC4", key: "cliente" }
-                ].map(({ field, label, color, key }) => (
-                  <div key={field} style={S.card}>
-                    <div style={{ fontSize: 11, color, fontWeight: 700, letterSpacing: "1px", marginBottom: 14 }}>{label}</div>
-                    {selectedClient[field].length === 0 && <div style={{ fontSize: 13, color: "#4A5568", marginBottom: 12 }}>Sin tareas</div>}
-                    {selectedClient[field].map((tarea, idx) => (
-                      <div key={idx} style={{ display: "flex", gap: 8, alignItems: "flex-start", padding: "7px 0", borderBottom: idx < selectedClient[field].length - 1 ? "1px solid #131929" : "none" }}>
-                        {/* Checkbox */}
-                        <div onClick={() => toggleTarea(selectedClient.id, field, idx)}
-                          style={{ width: 18, height: 18, borderRadius: 5, border: tarea.done ? "none" : `2px solid ${color}`, background: tarea.done ? color : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2, cursor: "pointer" }}>
-                          {tarea.done && <span style={{ fontSize: 11, color: "#0A0E1A", fontWeight: 700 }}>✓</span>}
+                  { field: "misTareas", label: "Mis tareas", color: "#D97706", bg: "#FFFBEB", key: "mia" },
+                  { field: "tareasCliente", label: "Tareas del cliente", color: "#0D9488", bg: "#F0FDFA", key: "cliente" }
+                ].map(({ field, label, color, bg, key }) => (
+                  <div key={field} className="card" style={{ padding: 22 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18 }}>
+                      <div style={{ width: 8, height: 8, borderRadius: "50%", background: color }} />
+                      <div style={{ fontSize: 12, fontWeight: 700, color, textTransform: "uppercase", letterSpacing: "0.8px" }}>{label}</div>
+                      <div style={{ marginLeft: "auto", background: bg, color, fontSize: 11, fontWeight: 700, padding: "2px 10px", borderRadius: 20 }}>
+                        {sc[field].filter(t => !t.done).length} pendientes
+                      </div>
+                    </div>
+                    {sc[field].length === 0 && <div style={{ fontSize: 13, color: "#CBD5E1", fontStyle: "italic", marginBottom: 12 }}>Sin tareas</div>}
+                    {sc[field].map((tarea, idx) => (
+                      <div key={idx} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "9px 0", borderBottom: idx < sc[field].length - 1 ? "1px solid #F1F5F9" : "none" }}>
+                        <div onClick={() => toggleTarea(sc.id, field, idx)}
+                          style={{ width: 20, height: 20, borderRadius: 6, border: tarea.done ? "none" : `2px solid ${color}`, background: tarea.done ? color : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1, cursor: "pointer", transition: "all .15s" }}>
+                          {tarea.done && <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
                         </div>
-                        {/* Texto editable */}
-                        <div style={{ flex: 1, fontSize: 13, color: tarea.done ? "#4A5568" : "#CBD5E0", textDecoration: tarea.done ? "line-through" : "none", lineHeight: 1.5 }}>
-                          <EditableText
-                            value={tarea.texto}
-                            onSave={(txt) => editTarea(selectedClient.id, field, idx, txt)}
-                            multiline
-                          />
+                        <div style={{ flex: 1, fontSize: 13, color: tarea.done ? "#CBD5E1" : "#334155", textDecoration: tarea.done ? "line-through" : "none", lineHeight: 1.6 }}>
+                          <EditableText value={tarea.texto} onSave={txt => editTarea(sc.id, field, idx, txt)} multiline />
                         </div>
-                        {/* Borrar */}
-                        <button className="ib del" style={S.iconBtn} onClick={() => deleteTarea(selectedClient.id, field, idx)} title="Eliminar">✕</button>
+                        <button className="del-btn" onClick={() => deleteTarea(sc.id, field, idx)}>✕</button>
                       </div>
                     ))}
-                    {/* Agregar tarea */}
-                    <div className="add-row" style={{ marginTop: 10 }}>
-                      <input
-                        placeholder="+ Nueva tarea..."
+                    <div style={{ marginTop: 12 }}>
+                      <input className="add-input" placeholder="+ Nueva tarea... (Enter para guardar)"
                         value={nuevaTarea[key]}
                         onChange={e => setNuevaTarea(p => ({ ...p, [key]: e.target.value }))}
-                        onKeyDown={e => {
-                          if (e.key === "Enter" && nuevaTarea[key].trim()) {
-                            addTarea(selectedClient.id, field, nuevaTarea[key]);
-                            setNuevaTarea(p => ({ ...p, [key]: "" }));
-                          }
-                        }}
+                        onKeyDown={e => { if (e.key === "Enter" && nuevaTarea[key].trim()) { addTarea(sc.id, field, nuevaTarea[key]); setNuevaTarea(p => ({ ...p, [key]: "" })); } }}
                       />
                     </div>
                   </div>
@@ -575,48 +526,39 @@ export default function PanelConsultoria() {
               </div>
             )}
 
-            {/* INICIATIVAS */}
             {activeTab === "iniciativas" && (
-              <div style={S.card}>
-                <div style={{ fontSize: 11, color: "#4A5568", fontWeight: 700, letterSpacing: "1px", marginBottom: 16 }}>INICIATIVAS DEL PROYECTO</div>
-                {selectedClient.iniciativas.length === 0 && <div style={{ fontSize: 13, color: "#4A5568", marginBottom: 12 }}>Sin iniciativas cargadas.</div>}
-                {selectedClient.iniciativas.map((ini, idx) => {
+              <div className="card" style={{ padding: 22 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 20 }}>Iniciativas del proyecto</div>
+                {sc.iniciativas.length === 0 && <div style={{ fontSize: 13, color: "#CBD5E1", fontStyle: "italic", marginBottom: 12 }}>Sin iniciativas cargadas.</div>}
+                {sc.iniciativas.map((ini, idx) => {
                   const cfg = estadoConfig[ini.estado] || estadoConfig["pendiente"];
-                  const progress = ini.estado === "completado" ? 100 : ini.estado === "en-progreso" ? 50 : 8;
+                  const progress = ini.estado === "completado" ? 100 : ini.estado === "en-progreso" ? 50 : 0;
                   return (
-                    <div key={idx} style={{ marginBottom: 14, paddingBottom: 14, borderBottom: idx < selectedClient.iniciativas.length - 1 ? "1px solid #131929" : "none" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginBottom: 7 }}>
-                        <div style={{ fontSize: 13, fontWeight: 500, flex: 1 }}>
-                          <EditableText value={ini.nombre} onSave={txt => editIniciativa(selectedClient.id, idx, txt)} />
+                    <div key={idx} style={{ marginBottom: 16, paddingBottom: 16, borderBottom: idx < sc.iniciativas.length - 1 ? "1px solid #F1F5F9" : "none" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 8 }}>
+                        <div style={{ fontSize: 13, fontWeight: 500, color: "#334155", flex: 1 }}>
+                          <EditableText value={ini.nombre} onSave={txt => editIni(sc.id, idx, txt)} />
                         </div>
-                        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                          {/* Ciclar estado */}
-                          <div onClick={() => cycleEstado(selectedClient.id, idx)}
-                            style={{ background: cfg.bg, color: cfg.color, fontSize: 11, fontWeight: 600, padding: "2px 10px", borderRadius: 20, whiteSpace: "nowrap", cursor: "pointer" }}
-                            title="Clic para cambiar estado">
+                        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                          <div onClick={() => cycleEstado(sc.id, idx)}
+                            style={{ background: cfg.bg, color: cfg.color, fontSize: 11, fontWeight: 700, padding: "3px 12px", borderRadius: 20, cursor: "pointer", whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: 5 }}>
+                            <div style={{ width: 6, height: 6, borderRadius: "50%", background: cfg.dot }} />
                             {cfg.label}
                           </div>
-                          <button className="ib del" style={S.iconBtn} onClick={() => deleteIniciativa(selectedClient.id, idx)} title="Eliminar">✕</button>
+                          <button className="del-btn" onClick={() => deleteIni(sc.id, idx)}>✕</button>
                         </div>
                       </div>
-                      <div style={{ background: "#131929", borderRadius: 4, height: 4, overflow: "hidden" }}>
-                        <div style={{ background: cfg.color, height: "100%", width: `${progress}%`, borderRadius: 4, transition: "width .5s" }} />
+                      <div style={{ background: "#F1F5F9", borderRadius: 4, height: 4, overflow: "hidden" }}>
+                        <div style={{ background: `linear-gradient(90deg, ${sc.color}, ${cfg.color})`, height: "100%", width: `${progress}%`, borderRadius: 4, transition: "width .6s ease" }} />
                       </div>
                     </div>
                   );
                 })}
-                {/* Agregar iniciativa */}
-                <div className="add-row" style={{ marginTop: 10 }}>
-                  <input
-                    placeholder="+ Nueva iniciativa..."
+                <div style={{ marginTop: 12 }}>
+                  <input className="add-input" placeholder="+ Nueva iniciativa... (Enter para guardar)"
                     value={nuevaIniciativa}
                     onChange={e => setNuevaIniciativa(e.target.value)}
-                    onKeyDown={e => {
-                      if (e.key === "Enter" && nuevaIniciativa.trim()) {
-                        addIniciativa(selectedClient.id, nuevaIniciativa);
-                        setNuevaIniciativa("");
-                      }
-                    }}
+                    onKeyDown={e => { if (e.key === "Enter" && nuevaIniciativa.trim()) { addIni(sc.id, nuevaIniciativa); setNuevaIniciativa(""); } }}
                   />
                 </div>
               </div>
@@ -625,48 +567,56 @@ export default function PanelConsultoria() {
         )}
 
         {/* ACTUALIZAR */}
-        {view === "update" && selectedClient && (
+        {view === "update" && sc && (
           <div>
-            <div style={{ ...S.card, marginBottom: 16 }}>
-              <div style={{ fontSize: 11, color: "#4A5568", fontWeight: 700, letterSpacing: "1px", marginBottom: 6 }}>ACTUALIZAR REUNIÓN</div>
-              <div style={{ fontFamily: "'Syne',sans-serif", fontSize: 20, fontWeight: 700, marginBottom: 16 }}>{selectedClient.icon} {selectedClient.name}</div>
-              <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 10 }}>Contame qué pasó en la reunión. Qué hiciste, qué quedó pendiente, qué tiene que hacer el cliente y cuál es el foco de la próxima.</div>
+            <div className="card" style={{ padding: 28, marginBottom: 20 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
+                <div style={{ width: 44, height: 44, background: sc.accent, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>{sc.icon}</div>
+                <div>
+                  <div style={{ fontSize: 11, color: "#94A3B8", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>Actualizar reunión</div>
+                  <div style={{ fontSize: 18, fontWeight: 800, color: "#0F172A" }}>{sc.name}</div>
+                </div>
+              </div>
+              <div style={{ fontSize: 13, color: "#64748B", marginBottom: 12 }}>
+                Contame qué pasó en la reunión. Qué hiciste, qué quedó pendiente, qué tiene que hacer el cliente y cuál es el foco de la próxima.
+              </div>
               <textarea value={updateText} onChange={e => setUpdateText(e.target.value)}
                 placeholder="Ej: Hoy revisamos el dashboard, quedó funcionando. Le pedí que cargue las ventas de los 3 locales que faltan. La semana que viene vemos los números consolidados..."
-                style={{ width: "100%", background: "#131929", border: "1px solid #2D3748", borderRadius: 12, padding: 16, color: "#E2E8F0", fontSize: 14, lineHeight: 1.7, minHeight: 140, transition: "border-color .2s" }} />
-              <div style={{ marginTop: 12 }}>
-                <button style={{ ...S.btn, background: procesando ? "#2D3748" : "#E8C547", color: "#0A0E1A", padding: "10px 24px", borderRadius: 10, fontSize: 14, fontWeight: 700, opacity: (!updateText.trim() || procesando) ? 0.5 : 1 }}
-                  onClick={procesarUpdate} disabled={procesando || !updateText.trim()}>
-                  {procesando ? "Procesando..." : "Procesar con IA"}
+                style={{ width: "100%", background: "#F8FAFC", border: "1.5px solid #E2E8F0", borderRadius: 14, padding: 18, color: "#0F172A", fontSize: 14, lineHeight: 1.7, minHeight: 150 }} />
+              <div style={{ marginTop: 14 }}>
+                <button className="btn" onClick={procesarUpdate} disabled={procesando || !updateText.trim()}
+                  style={{ background: procesando || !updateText.trim() ? "#E2E8F0" : "linear-gradient(135deg, #0D9488, #0891B2)", color: procesando || !updateText.trim() ? "#94A3B8" : "#fff", padding: "12px 28px", borderRadius: 12, fontSize: 14, fontWeight: 700, boxShadow: procesando || !updateText.trim() ? "none" : "0 4px 16px rgba(13,148,136,.3)" }}>
+                  {procesando ? "Procesando..." : "Procesar con IA →"}
                 </button>
               </div>
             </div>
 
             {updateResult && !updateResult.error && (
-              <div style={{ ...S.card, border: "1px solid #34D399" }}>
-                <div style={{ fontSize: 11, color: "#34D399", fontWeight: 700, letterSpacing: "1px", marginBottom: 16 }}>RESULTADO — REVISÁ Y CONFIRMÁ</div>
-                <div style={{ marginBottom: 14 }}>
-                  <div style={{ fontSize: 11, color: "#4A5568", marginBottom: 6 }}>AVANCE</div>
-                  <div style={{ background: "#131929", borderRadius: 10, padding: 12, fontSize: 13, color: "#CBD5E0", lineHeight: 1.6 }}>{updateResult.ultimoAvance}</div>
+              <div className="card" style={{ padding: 28, borderColor: "#6EE7B7" }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#059669", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 20 }}>✓ Resultado — Revisá y confirmá</div>
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ fontSize: 11, color: "#94A3B8", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>Avance</div>
+                  <div style={{ background: "#F8FAFC", borderRadius: 12, padding: 14, fontSize: 13, color: "#334155", lineHeight: 1.7 }}>{updateResult.ultimoAvance}</div>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 14 }}>
-                  {[{ key: "misTareas", label: "MIS TAREAS", color: "#E8C547" }, { key: "tareasCliente", label: "TAREAS CLIENTE", color: "#4ECDC4" }].map(({ key, label, color }) => (
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+                  {[{ key: "misTareas", label: "Mis tareas", color: "#D97706" }, { key: "tareasCliente", label: "Tareas cliente", color: "#0D9488" }].map(({ key, label, color }) => (
                     <div key={key}>
-                      <div style={{ fontSize: 11, color, marginBottom: 6 }}>{label}</div>
-                      {updateResult[key]?.map((t, i) => <div key={i} style={{ background: "#131929", borderRadius: 8, padding: "8px 12px", fontSize: 13, marginBottom: 6, color: "#CBD5E0" }}>· {t}</div>)}
+                      <div style={{ fontSize: 11, color, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 8 }}>{label}</div>
+                      {updateResult[key]?.map((t, i) => <div key={i} style={{ background: "#F8FAFC", borderRadius: 10, padding: "9px 14px", fontSize: 13, marginBottom: 6, color: "#334155" }}>· {t}</div>)}
                     </div>
                   ))}
                 </div>
-                <div style={{ marginBottom: 16 }}>
-                  <div style={{ fontSize: 11, color: "#4A5568", marginBottom: 6 }}>FOCO PRÓXIMA REUNIÓN</div>
-                  <div style={{ background: "#131929", borderRadius: 10, padding: 12, fontSize: 13, color: "#CBD5E0" }}>{updateResult.focoReunion}</div>
+                <div style={{ marginBottom: 20 }}>
+                  <div style={{ fontSize: 11, color: "#94A3B8", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>Foco próxima reunión</div>
+                  <div style={{ background: "#F8FAFC", borderRadius: 12, padding: 14, fontSize: 13, color: "#334155" }}>{updateResult.focoReunion}</div>
                 </div>
-                <button style={{ ...S.btn, background: "#34D399", color: "#0A0E1A", padding: "10px 24px", borderRadius: 10, fontSize: 14, fontWeight: 700 }} onClick={aplicarUpdate}>
-                  Aplicar actualización
+                <button className="btn" onClick={aplicarUpdate}
+                  style={{ background: "linear-gradient(135deg, #059669, #0D9488)", color: "#fff", padding: "12px 28px", borderRadius: 12, fontSize: 14, fontWeight: 700, boxShadow: "0 4px 16px rgba(5,150,105,.3)" }}>
+                  Aplicar actualización ✓
                 </button>
               </div>
             )}
-            {updateResult?.error && <div style={{ background: "#1A1020", border: "1px solid #FF6B6B", borderRadius: 12, padding: 16, fontSize: 13, color: "#FF6B6B" }}>{updateResult.error}</div>}
+            {updateResult?.error && <div style={{ background: "#FEF2F2", border: "1px solid #FECACA", borderRadius: 14, padding: 16, fontSize: 13, color: "#DC2626" }}>{updateResult.error}</div>}
           </div>
         )}
       </div>
