@@ -12,6 +12,7 @@ const initialClients = [
     icon: "👗",
     logo: "/logos/love-chuka.png",
     historial: [],
+    recursos: [],
     ultimoAvance: "Se presentaron a Mariela las dos plataformas desarrolladas con Claude Code (Administración y RRHH). Mariela validó con entusiasmo. Se unificó nómina de empleados para carga en Visma Way.",
     misTareas: [
       { texto: "Definir arquitectura modular: agregar Ficha de Local como módulo dentro de la plataforma de Administración", done: false },
@@ -47,6 +48,7 @@ const initialClients = [
     icon: "🏭",
     logo: null,
     historial: [],
+    recursos: [],
     ultimoAvance: "Reunión 3 completada: se trabajaron los 5 porqués en vivo. Emergieron verbos candidatos para el propósito (transformar, sostener, liberar, garantizar, ordenar) y la palabra espontánea 'seriedad'.",
     misTareas: [
       { texto: "Redactar 3-4 opciones de propósito formateadas (verbo infinitivo + para quién + para qué)", done: false },
@@ -85,6 +87,7 @@ const initialClients = [
     icon: "🩺",
     logo: "/logos/gelform.png",
     historial: [],
+    recursos: [],
     ultimoAvance: "Auditoría completa del proceso de pedidos con entrevistas a administración, depósito y producción. Plataforma de gestión de caja en uso por Silvana y Camila.",
     misTareas: [
       { texto: "Entrevistar a vendedores para completar el mapeo del proceso de pedidos", done: false },
@@ -129,6 +132,7 @@ const initialClients = [
     icon: "🏢",
     logo: "/logos/remax.png",
     historial: [],
+    recursos: [],
     ultimoAvance: "Entrevistas realizadas con Jessica (marketing/pauta) y César (RRHH). Hallazgos procesados y validados.",
     misTareas: [
       { texto: "Entrevistar a Juli (administración)", done: false },
@@ -171,6 +175,7 @@ const initialClients = [
     icon: "🦋",
     logo: "/logos/los-invertebrados.png",
     historial: [],
+    recursos: [],
     ultimoAvance: "Se publicó la plataforma con agenda online (React + Supabase vía Lovable). A la espera del alta de los 12 profes.",
     misTareas: [
       { texto: "Enviar mensaje al grupo de profes con link, paso a paso y deadline de 48 hs", done: false },
@@ -206,6 +211,7 @@ const initialClients = [
     icon: "⚙️",
     logo: "/logos/coch.png",
     historial: [],
+    recursos: [],
     ultimoAvance: "Pendiente de carga. Ejecutá el prompt en el proyecto de Coch para completar.",
     misTareas: [],
     tareasCliente: [],
@@ -222,6 +228,14 @@ const estadoConfig = {
 };
 
 const estadoOrder = ["pendiente", "en-progreso", "completado"];
+
+const categoriaConfig = {
+  "Dashboard": { color: "#2563EB", bg: "#EFF6FF" },
+  "Drive":     { color: "#059669", bg: "#ECFDF5" },
+  "Sistema":   { color: "#7C3AED", bg: "#F5F3FF" },
+  "Web":       { color: "#0891B2", bg: "#ECFEFF" },
+  "Otro":      { color: "#64748B", bg: "#F1F5F9" },
+};
 
 const etapaConfig = {
   "Diagnóstico": { color: "#2563EB", bg: "#EFF6FF" },
@@ -291,6 +305,7 @@ export default function PanelConsultoria() {
   const [activeTab, setActiveTab] = useState("tareas");
   const [nuevaTarea, setNuevaTarea] = useState({ mia: "", cliente: "" });
   const [nuevaIniciativa, setNuevaIniciativa] = useState("");
+  const [nuevoRecurso, setNuevoRecurso] = useState({ nombre: "", link: "", categoria: "Otro" });
 
   useEffect(() => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(clients)); } catch {}
@@ -310,6 +325,13 @@ export default function PanelConsultoria() {
   function cycleEstado(id, idx) { upd(id, c => ({ ...c, iniciativas: c.iniciativas.map((ini, i) => i !== idx ? ini : { ...ini, estado: estadoOrder[(estadoOrder.indexOf(ini.estado) + 1) % estadoOrder.length] }) })); }
   function deleteIni(id, idx) { upd(id, c => ({ ...c, iniciativas: c.iniciativas.filter((_, i) => i !== idx) })); }
   function addIni(id, nombre) { if (!nombre.trim()) return; upd(id, c => ({ ...c, iniciativas: [...c.iniciativas, { nombre: nombre.trim(), estado: "pendiente" }] })); }
+  function addRecurso(id, r) {
+    if (!r.nombre.trim() || !r.link.trim()) return;
+    const link = r.link.trim().match(/^https?:\/\//) ? r.link.trim() : "https://" + r.link.trim();
+    upd(id, c => ({ ...c, recursos: [...(c.recursos || []), { nombre: r.nombre.trim(), link, categoria: r.categoria || "Otro" }] }));
+  }
+  function editRecurso(id, idx, field, value) { upd(id, c => ({ ...c, recursos: c.recursos.map((r, i) => i === idx ? { ...r, [field]: value } : r) })); }
+  function deleteRecurso(id, idx) { upd(id, c => ({ ...c, recursos: c.recursos.filter((_, i) => i !== idx) })); }
 
   async function procesarUpdate() {
     if (!updateText.trim() || !sc) return;
@@ -507,9 +529,9 @@ export default function PanelConsultoria() {
             </div>
 
             <div style={{ display: "flex", borderBottom: "1px solid #E2E8F0", marginBottom: 20 }}>
-              {["tareas", "iniciativas", "historial"].map(tab => (
+              {["tareas", "iniciativas", "recursos", "historial"].map(tab => (
                 <button key={tab} className={`tab ${activeTab === tab ? "tab-active" : ""}`} onClick={() => setActiveTab(tab)}>
-                  {tab === "tareas" ? "Tareas" : tab === "iniciativas" ? "Iniciativas" : "Historial"}
+                  {tab === "tareas" ? "Tareas" : tab === "iniciativas" ? "Iniciativas" : tab === "recursos" ? "Recursos" : "Historial"}
                 </button>
               ))}
             </div>
@@ -587,6 +609,65 @@ export default function PanelConsultoria() {
                     onChange={e => setNuevaIniciativa(e.target.value)}
                     onKeyDown={e => { if (e.key === "Enter" && nuevaIniciativa.trim()) { addIni(sc.id, nuevaIniciativa); setNuevaIniciativa(""); } }}
                   />
+                </div>
+              </div>
+            )}
+            {activeTab === "recursos" && (
+              <div className="card" style={{ padding: 22 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 20 }}>Recursos del cliente</div>
+                {(!sc.recursos || sc.recursos.length === 0) && (
+                  <div style={{ fontSize: 13, color: "#CBD5E1", fontStyle: "italic", marginBottom: 12 }}>Sin recursos cargados.</div>
+                )}
+                {(sc.recursos || []).map((rec, idx) => {
+                  const catCfg = categoriaConfig[rec.categoria] || categoriaConfig["Otro"];
+                  return (
+                    <div key={idx} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "10px 0", borderBottom: idx < sc.recursos.length - 1 ? "1px solid #F1F5F9" : "none" }}>
+                      <div style={{ background: catCfg.bg, color: catCfg.color, fontSize: 10, fontWeight: 700, padding: "3px 9px", borderRadius: 20, whiteSpace: "nowrap", marginTop: 2, flexShrink: 0 }}>
+                        {rec.categoria}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "#334155" }}>
+                            <EditableText value={rec.nombre} onSave={v => editRecurso(sc.id, idx, "nombre", v)} />
+                          </div>
+                          <a href={rec.link} target="_blank" rel="noopener noreferrer"
+                            style={{ color: sc.color, fontSize: 14, textDecoration: "none", flexShrink: 0 }} title="Abrir enlace">↗</a>
+                        </div>
+                        <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 3 }}>
+                          <EditableText value={rec.link} onSave={v => editRecurso(sc.id, idx, "link", v)} />
+                        </div>
+                      </div>
+                      <button className="del-btn" onClick={() => deleteRecurso(sc.id, idx)}>✕</button>
+                    </div>
+                  );
+                })}
+                <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 8 }}>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <input className="add-input" placeholder="Nombre (ej: Dashboard ventas)"
+                      value={nuevoRecurso.nombre}
+                      onChange={e => setNuevoRecurso(p => ({ ...p, nombre: e.target.value }))}
+                      style={{ flex: 1 }}
+                    />
+                    <input className="add-input" placeholder="URL"
+                      value={nuevoRecurso.link}
+                      onChange={e => setNuevoRecurso(p => ({ ...p, link: e.target.value }))}
+                      onKeyDown={e => { if (e.key === "Enter" && nuevoRecurso.nombre.trim() && nuevoRecurso.link.trim()) { addRecurso(sc.id, nuevoRecurso); setNuevoRecurso({ nombre: "", link: "", categoria: "Otro" }); } }}
+                      style={{ flex: 2 }}
+                    />
+                  </div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <select value={nuevoRecurso.categoria}
+                      onChange={e => setNuevoRecurso(p => ({ ...p, categoria: e.target.value }))}
+                      style={{ background: "#F8FAFC", border: "1.5px dashed #CBD5E1", borderRadius: 10, padding: "9px 14px", color: "#64748B", fontSize: 13, fontFamily: "inherit", outline: "none", cursor: "pointer" }}>
+                      {["Dashboard", "Drive", "Sistema", "Web", "Otro"].map(cat => <option key={cat}>{cat}</option>)}
+                    </select>
+                    <button className="btn"
+                      onClick={() => { addRecurso(sc.id, nuevoRecurso); setNuevoRecurso({ nombre: "", link: "", categoria: "Otro" }); }}
+                      disabled={!nuevoRecurso.nombre.trim() || !nuevoRecurso.link.trim()}
+                      style={{ background: !nuevoRecurso.nombre.trim() || !nuevoRecurso.link.trim() ? "#E2E8F0" : `linear-gradient(135deg, ${sc.color}, ${sc.color}CC)`, color: !nuevoRecurso.nombre.trim() || !nuevoRecurso.link.trim() ? "#94A3B8" : "#fff", padding: "9px 20px", borderRadius: 10, fontSize: 13, fontWeight: 700 }}>
+                      + Agregar
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
