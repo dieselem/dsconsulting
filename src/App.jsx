@@ -635,6 +635,9 @@ export default function PanelConsultoria() {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
         {view === "update" && sc && (
           <div>
             <div className="card" style={{ padding: 28, marginBottom: 20 }}>
