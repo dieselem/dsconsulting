@@ -10,6 +10,7 @@ const initialClients = [
     color: "#0891B2",
     accent: "#ECFEFF",
     icon: "👗",
+    logo: "/logos/love-chuka.png",
     ultimoAvance: "Se presentaron a Mariela las dos plataformas desarrolladas con Claude Code (Administración y RRHH). Mariela validó con entusiasmo. Se unificó nómina de empleados para carga en Visma Way.",
     misTareas: [
       { texto: "Definir arquitectura modular: agregar Ficha de Local como módulo dentro de la plataforma de Administración", done: false },
@@ -43,6 +44,7 @@ const initialClients = [
     color: "#0D9488",
     accent: "#F0FDFA",
     icon: "🏭",
+    logo: null,
     ultimoAvance: "Reunión 3 completada: se trabajaron los 5 porqués en vivo. Emergieron verbos candidatos para el propósito (transformar, sostener, liberar, garantizar, ordenar) y la palabra espontánea 'seriedad'.",
     misTareas: [
       { texto: "Redactar 3-4 opciones de propósito formateadas (verbo infinitivo + para quién + para qué)", done: false },
@@ -79,6 +81,7 @@ const initialClients = [
     color: "#7C3AED",
     accent: "#F5F3FF",
     icon: "🩺",
+    logo: "/logos/gelform.png",
     ultimoAvance: "Auditoría completa del proceso de pedidos con entrevistas a administración, depósito y producción. Plataforma de gestión de caja en uso por Silvana y Camila.",
     misTareas: [
       { texto: "Entrevistar a vendedores para completar el mapeo del proceso de pedidos", done: false },
@@ -121,6 +124,7 @@ const initialClients = [
     color: "#DC2626",
     accent: "#FEF2F2",
     icon: "🏢",
+    logo: "/logos/remax.png",
     ultimoAvance: "Entrevistas realizadas con Jessica (marketing/pauta) y César (RRHH). Hallazgos procesados y validados.",
     misTareas: [
       { texto: "Entrevistar a Juli (administración)", done: false },
@@ -161,6 +165,7 @@ const initialClients = [
     color: "#059669",
     accent: "#ECFDF5",
     icon: "🦋",
+    logo: "/logos/los-invertebrados.png",
     ultimoAvance: "Se publicó la plataforma con agenda online (React + Supabase vía Lovable). A la espera del alta de los 12 profes.",
     misTareas: [
       { texto: "Enviar mensaje al grupo de profes con link, paso a paso y deadline de 48 hs", done: false },
@@ -194,6 +199,7 @@ const initialClients = [
     color: "#D97706",
     accent: "#FFFBEB",
     icon: "⚙️",
+    logo: "/logos/coch.png",
     ultimoAvance: "Pendiente de carga. Ejecutá el prompt en el proyecto de Coch para completar.",
     misTareas: [],
     tareasCliente: [],
@@ -362,7 +368,7 @@ export default function PanelConsultoria() {
             </button>
           )}
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 36, height: 36, background: "linear-gradient(135deg, #0D9488, #0891B2)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 800, color: "#fff" }}>D</div>
+            <img src="/logos/ds.png" alt="DS" style={{ width: 36, height: 36, borderRadius: 10, objectFit: "contain", background: "#F1F5F9" }} />
             <div>
               <div style={{ fontSize: 16, fontWeight: 800, color: "#0F172A", letterSpacing: "-0.3px" }}>DS <span style={{ color: "#0D9488" }}>Consultoría</span></div>
               <div style={{ fontSize: 10, color: "#94A3B8", fontWeight: 500, letterSpacing: "1px", textTransform: "uppercase" }}>Panel de Control</div>
@@ -419,7 +425,9 @@ export default function PanelConsultoria() {
                   <div style={{ height: 5, background: c.color }} />
                   <div style={{ padding: "20px 22px" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
-                      <div style={{ width: 44, height: 44, background: c.accent, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>{c.icon}</div>
+                      <div style={{ width: 44, height: 44, background: c.accent, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, overflow: "hidden" }}>
+                        {c.logo ? <img src={c.logo} alt={c.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 4 }} /> : c.icon}
+                      </div>
                       <div style={{ background: etapa.bg, color: etapa.color, fontSize: 11, fontWeight: 700, padding: "4px 12px", borderRadius: 20, letterSpacing: "0.3px" }}>{c.etapa}</div>
                     </div>
                     <div style={{ fontSize: 16, fontWeight: 700, color: "#0F172A", marginBottom: 3, letterSpacing: "-0.2px" }}>{c.name}</div>
@@ -454,7 +462,9 @@ export default function PanelConsultoria() {
               <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 5, background: sc.color }} />
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16 }}>
                 <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-                  <div style={{ width: 52, height: 52, background: sc.accent, borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, flexShrink: 0 }}>{sc.icon}</div>
+                  <div style={{ width: 52, height: 52, background: sc.accent, borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, flexShrink: 0, overflow: "hidden" }}>
+                    {sc.logo ? <img src={sc.logo} alt={sc.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 6 }} /> : sc.icon}
+                  </div>
                   <div>
                     <div style={{ fontSize: 22, fontWeight: 800, color: "#0F172A", letterSpacing: "-0.4px" }}>{sc.name}</div>
                     <div style={{ fontSize: 13, color: "#94A3B8", marginTop: 2 }}>{sc.rubro} · Vía {sc.via}</div>
@@ -571,7 +581,9 @@ export default function PanelConsultoria() {
           <div>
             <div className="card" style={{ padding: 28, marginBottom: 20 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-                <div style={{ width: 44, height: 44, background: sc.accent, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>{sc.icon}</div>
+                <div style={{ width: 44, height: 44, background: sc.accent, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, overflow: "hidden" }}>
+                  {sc.logo ? <img src={sc.logo} alt={sc.name} style={{ width: "100%", height: "100%", objectFit: "contain", padding: 4 }} /> : sc.icon}
+                </div>
                 <div>
                   <div style={{ fontSize: 11, color: "#94A3B8", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>Actualizar reunión</div>
                   <div style={{ fontSize: 18, fontWeight: 800, color: "#0F172A" }}>{sc.name}</div>
