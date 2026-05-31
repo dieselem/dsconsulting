@@ -246,14 +246,44 @@ const etapaConfig = {
 };
 
 function getDaysUntil(dateStr) {
+  if (!dateStr) return 0;
   const today = new Date();
-  const target = new Date(dateStr);
+  const target = new Date(dateStr.length > 10 ? dateStr : dateStr + "T12:00");
   return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
 }
 
 function formatDate(dateStr) {
-  const d = new Date(dateStr);
+  if (!dateStr) return "";
+  const d = new Date(dateStr.length > 10 ? dateStr : dateStr + "T12:00");
   return d.toLocaleDateString("es-AR", { weekday: "short", day: "numeric", month: "short" });
+}
+
+function toDatetimeLocal(dateStr) {
+  if (!dateStr) return "";
+  return dateStr.length > 10 ? dateStr.slice(0, 16) : dateStr + "T00:00";
+}
+
+function getCalendarUrl(client) {
+  const dateStr = client.proximaReunion;
+  if (!dateStr) return "";
+  const fullStr = dateStr.length > 10 ? dateStr.slice(0, 16) : dateStr + "T09:00";
+  const [datePart, timePart] = fullStr.split("T");
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hour, min] = timePart.split(":").map(Number);
+  const fmt = d => [
+    d.getUTCFullYear(),
+    String(d.getUTCMonth() + 1).padStart(2, "0"),
+    String(d.getUTCDate()).padStart(2, "0"),
+    "T",
+    String(d.getUTCHours()).padStart(2, "0"),
+    String(d.getUTCMinutes()).padStart(2, "0"),
+    "00Z",
+  ].join("");
+  const start = new Date(Date.UTC(year, month - 1, day, hour + 3, min));
+  const end   = new Date(Date.UTC(year, month - 1, day, hour + 4, min));
+  const text    = encodeURIComponent(`Reunión ${client.name}`);
+  const details = encodeURIComponent(`Reunión de consultoría con ${client.name}`);
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${fmt(start)}/${fmt(end)}&details=${details}`;
 }
 
 function EditableText({ value, onSave, multiline }) {
@@ -531,8 +561,17 @@ export default function PanelConsultoria() {
 
               <div style={{ marginTop: 14, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
                 <div style={{ fontSize: 13, color: "#64748B" }}>📅 Próxima reunión:</div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: sc.color }}>{formatDate(sc.proximaReunion)}</div>
+                <input type="datetime-local" value={toDatetimeLocal(sc.proximaReunion)}
+                  onChange={e => upd(sc.id, c => ({ ...c, proximaReunion: e.target.value }))}
+                  style={{ border: "none", background: "transparent", fontFamily: "inherit", fontSize: 13, fontWeight: 700, color: sc.color, outline: "none", cursor: "pointer", padding: 0 }}
+                />
                 <div style={{ fontSize: 12, color: "#94A3B8" }}>— {sc.focoReunion}</div>
+                {sc.proximaReunion && (
+                  <a href={getCalendarUrl(sc)} target="_blank" rel="noopener noreferrer"
+                    style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "#EFF6FF", color: "#2563EB", fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 20, textDecoration: "none", whiteSpace: "nowrap" }}>
+                    📆 Google Calendar
+                  </a>
+                )}
               </div>
             </div>
 
