@@ -1,28 +1,17 @@
-export const config = {
-  api: { bodyParser: true },
-};
-
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+  console.log("req.body:", req.body);
 
-  try {
-    const body = typeof req.body === "string" ? req.body : JSON.stringify(req.body);
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-api-key": process.env.ANTHROPIC_API_KEY,
+      "anthropic-version": "2023-06-01",
+    },
+    body: '{"model":"claude-sonnet-4-20250514","max_tokens":10,"messages":[{"role":"user","content":"test"}]}',
+  });
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "anthropic-version": "2023-06-01",
-        "x-api-key": process.env.ANTHROPIC_API_KEY,
-      },
-      body,
-    });
-
-    const data = await response.json();
-    return res.status(response.status).json(data);
-  } catch (err) {
-    return res.status(500).json({ error: "Proxy error", detail: err.message });
-  }
+  const data = await response.json();
+  console.log("anthropic status:", response.status, data);
+  res.status(response.status).json(data);
 }
