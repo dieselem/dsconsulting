@@ -7,7 +7,7 @@ app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 
 app.get('/', (req, res) => {
-  res.send('Proxy OK');
+  res.send('Proxy OK v2');
 });
 
 app.post('/api/chat', async (req, res) => {
