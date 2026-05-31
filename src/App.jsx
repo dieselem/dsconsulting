@@ -11,6 +11,7 @@ const initialClients = [
     accent: "#ECFEFF",
     icon: "👗",
     logo: "/logos/love-chuka.png",
+    historial: [],
     ultimoAvance: "Se presentaron a Mariela las dos plataformas desarrolladas con Claude Code (Administración y RRHH). Mariela validó con entusiasmo. Se unificó nómina de empleados para carga en Visma Way.",
     misTareas: [
       { texto: "Definir arquitectura modular: agregar Ficha de Local como módulo dentro de la plataforma de Administración", done: false },
@@ -45,6 +46,7 @@ const initialClients = [
     accent: "#F0FDFA",
     icon: "🏭",
     logo: null,
+    historial: [],
     ultimoAvance: "Reunión 3 completada: se trabajaron los 5 porqués en vivo. Emergieron verbos candidatos para el propósito (transformar, sostener, liberar, garantizar, ordenar) y la palabra espontánea 'seriedad'.",
     misTareas: [
       { texto: "Redactar 3-4 opciones de propósito formateadas (verbo infinitivo + para quién + para qué)", done: false },
@@ -82,6 +84,7 @@ const initialClients = [
     accent: "#F5F3FF",
     icon: "🩺",
     logo: "/logos/gelform.png",
+    historial: [],
     ultimoAvance: "Auditoría completa del proceso de pedidos con entrevistas a administración, depósito y producción. Plataforma de gestión de caja en uso por Silvana y Camila.",
     misTareas: [
       { texto: "Entrevistar a vendedores para completar el mapeo del proceso de pedidos", done: false },
@@ -125,6 +128,7 @@ const initialClients = [
     accent: "#FEF2F2",
     icon: "🏢",
     logo: "/logos/remax.png",
+    historial: [],
     ultimoAvance: "Entrevistas realizadas con Jessica (marketing/pauta) y César (RRHH). Hallazgos procesados y validados.",
     misTareas: [
       { texto: "Entrevistar a Juli (administración)", done: false },
@@ -166,6 +170,7 @@ const initialClients = [
     accent: "#ECFDF5",
     icon: "🦋",
     logo: "/logos/los-invertebrados.png",
+    historial: [],
     ultimoAvance: "Se publicó la plataforma con agenda online (React + Supabase vía Lovable). A la espera del alta de los 12 profes.",
     misTareas: [
       { texto: "Enviar mensaje al grupo de profes con link, paso a paso y deadline de 48 hs", done: false },
@@ -200,6 +205,7 @@ const initialClients = [
     accent: "#FFFBEB",
     icon: "⚙️",
     logo: "/logos/coch.png",
+    historial: [],
     ultimoAvance: "Pendiente de carga. Ejecutá el prompt en el proyecto de Coch para completar.",
     misTareas: [],
     tareasCliente: [],
@@ -327,14 +333,25 @@ export default function PanelConsultoria() {
 
   function aplicarUpdate() {
     if (!updateResult || updateResult.error) return;
+    const fechaHoy = new Date().toISOString().split("T")[0];
     upd(selected, c => ({
       ...c,
+      historial: [
+        {
+          fecha: fechaHoy,
+          resumen: updateResult.ultimoAvance,
+          misTareas: updateResult.misTareas,
+          tareasCliente: updateResult.tareasCliente,
+          focoReunion: updateResult.focoReunion,
+        },
+        ...(c.historial || []),
+      ],
       ultimoAvance: updateResult.ultimoAvance || c.ultimoAvance,
       misTareas: [...updateResult.misTareas.map(t => ({ texto: t, done: false })), ...c.misTareas.filter(t => t.done)],
       tareasCliente: [...updateResult.tareasCliente.map(t => ({ texto: t, done: false })), ...c.tareasCliente.filter(t => t.done)],
       focoReunion: updateResult.focoReunion || c.focoReunion,
     }));
-    setUpdateText(""); setUpdateResult(null); setView("detalle");
+    setUpdateText(""); setUpdateResult(null); setView("detalle"); setActiveTab("historial");
   }
 
   return (
@@ -490,9 +507,9 @@ export default function PanelConsultoria() {
             </div>
 
             <div style={{ display: "flex", borderBottom: "1px solid #E2E8F0", marginBottom: 20 }}>
-              {["tareas", "iniciativas"].map(tab => (
+              {["tareas", "iniciativas", "historial"].map(tab => (
                 <button key={tab} className={`tab ${activeTab === tab ? "tab-active" : ""}`} onClick={() => setActiveTab(tab)}>
-                  {tab === "tareas" ? "Tareas" : "Iniciativas"}
+                  {tab === "tareas" ? "Tareas" : tab === "iniciativas" ? "Iniciativas" : "Historial"}
                 </button>
               ))}
             </div>
@@ -573,10 +590,51 @@ export default function PanelConsultoria() {
                 </div>
               </div>
             )}
-          </div>
-        )}
-
-        {/* ACTUALIZAR */}
+            {activeTab === "historial" && (
+              <div className="card" style={{ padding: 22 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 20 }}>Historial de reuniones</div>
+                {(!sc.historial || sc.historial.length === 0) && (
+                  <div style={{ textAlign: "center", padding: "40px 20px" }}>
+                    <div style={{ fontSize: 32, marginBottom: 12 }}>📋</div>
+                    <div style={{ fontSize: 14, color: "#94A3B8", fontWeight: 500 }}>Sin reuniones registradas todavía</div>
+                    <div style={{ fontSize: 13, color: "#CBD5E1", marginTop: 4 }}>El historial se completa automáticamente al actualizar una reunión</div>
+                  </div>
+                )}
+                {(sc.historial || []).map((entry, idx) => (
+                  <div key={idx} style={{ marginBottom: 20, paddingBottom: 20, borderBottom: idx < sc.historial.length - 1 ? "1px solid #F1F5F9" : "none" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                      <div style={{ width: 8, height: 8, borderRadius: "50%", background: sc.color, flexShrink: 0 }} />
+                      <div style={{ fontSize: 13, fontWeight: 700, color: sc.color }}>
+                        {new Date(entry.fecha).toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                      </div>
+                    </div>
+                    <div style={{ background: "#F8FAFC", borderRadius: 12, padding: "12px 16px", marginBottom: 12, borderLeft: `3px solid ${sc.color}` }}>
+                      <div style={{ fontSize: 11, color: "#94A3B8", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 6 }}>Resumen</div>
+                      <div style={{ fontSize: 13, color: "#334155", lineHeight: 1.6 }}>{entry.resumen}</div>
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                      <div>
+                        <div style={{ fontSize: 11, color: "#D97706", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 6 }}>Mis tareas</div>
+                        {entry.misTareas?.map((t, i) => (
+                          <div key={i} style={{ fontSize: 12, color: "#64748B", padding: "4px 0", borderBottom: "1px solid #F8FAFC", lineHeight: 1.5 }}>· {t}</div>
+                        ))}
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 11, color: "#0D9488", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 6 }}>Tareas cliente</div>
+                        {entry.tareasCliente?.map((t, i) => (
+                          <div key={i} style={{ fontSize: 12, color: "#64748B", padding: "4px 0", borderBottom: "1px solid #F8FAFC", lineHeight: 1.5 }}>· {t}</div>
+                        ))}
+                      </div>
+                    </div>
+                    {entry.focoReunion && (
+                      <div style={{ marginTop: 10, fontSize: 12, color: "#94A3B8" }}>
+                        <span style={{ fontWeight: 600 }}>Foco siguiente reunión:</span> {entry.focoReunion}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
         {view === "update" && sc && (
           <div>
             <div className="card" style={{ padding: 28, marginBottom: 20 }}>
