@@ -318,7 +318,7 @@ export default function PanelConsultoria() {
       const res = await fetch("https://dsconsulting-production.up.railway.app/api/chat", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 1000,
+          model: "claude-sonnet-4-5-20250929", max_tokens: 1000,
           system: `Sos el asistente de consultoría de Diego Selem. Procesá el resumen de reunión y devolvé SOLO un JSON válido con esta estructura, sin texto antes ni después:
 {"ultimoAvance":"string","misTareas":["tarea1"],"tareasCliente":["tarea1"],"focoReunion":"string"}`,
           messages: [{ role: "user", content: `Cliente: ${sc.name}\nEtapa: ${sc.etapa}\nResumen: ${updateText}` }]
