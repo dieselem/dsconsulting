@@ -306,6 +306,8 @@ export default function PanelConsultoria() {
   const [nuevaTarea, setNuevaTarea] = useState({ mia: "", cliente: "" });
   const [nuevaIniciativa, setNuevaIniciativa] = useState("");
   const [nuevoRecurso, setNuevoRecurso] = useState({ nombre: "", link: "", categoria: "Otro" });
+  const [editandoRecurso, setEditandoRecurso] = useState(null);
+  const [editRecursoForm, setEditRecursoForm] = useState({ nombre: "", link: "" });
 
   useEffect(() => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(clients)); } catch {}
@@ -332,6 +334,12 @@ export default function PanelConsultoria() {
   }
   function editRecurso(id, idx, field, value) { upd(id, c => ({ ...c, recursos: c.recursos.map((r, i) => i === idx ? { ...r, [field]: value } : r) })); }
   function deleteRecurso(id, idx) { upd(id, c => ({ ...c, recursos: c.recursos.filter((_, i) => i !== idx) })); }
+  function saveRecurso(id, idx, form) {
+    if (!form.nombre.trim() || !form.link.trim()) return;
+    const link = form.link.trim().match(/^https?:\/\//) ? form.link.trim() : "https://" + form.link.trim();
+    upd(id, c => ({ ...c, recursos: c.recursos.map((r, i) => i === idx ? { ...r, nombre: form.nombre.trim(), link } : r) }));
+    setEditandoRecurso(null);
+  }
 
   async function procesarUpdate() {
     if (!updateText.trim() || !sc) return;
@@ -620,24 +628,45 @@ export default function PanelConsultoria() {
                 )}
                 {(sc.recursos || []).map((rec, idx) => {
                   const catCfg = categoriaConfig[rec.categoria] || categoriaConfig["Otro"];
+                  const isEditing = editandoRecurso === idx;
                   return (
-                    <div key={idx} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "10px 0", borderBottom: idx < sc.recursos.length - 1 ? "1px solid #F1F5F9" : "none" }}>
-                      <div style={{ background: catCfg.bg, color: catCfg.color, fontSize: 10, fontWeight: 700, padding: "3px 9px", borderRadius: 20, whiteSpace: "nowrap", marginTop: 2, flexShrink: 0 }}>
-                        {rec.categoria}
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: "#334155" }}>
-                            <EditableText value={rec.nombre} onSave={v => editRecurso(sc.id, idx, "nombre", v)} />
+                    <div key={idx} style={{ padding: "10px 0", borderBottom: idx < sc.recursos.length - 1 ? "1px solid #F1F5F9" : "none" }}>
+                      {isEditing ? (
+                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                          <div style={{ display: "flex", gap: 8 }}>
+                            <input className="add-input" value={editRecursoForm.nombre} autoFocus
+                              onChange={e => setEditRecursoForm(p => ({ ...p, nombre: e.target.value }))}
+                              placeholder="Nombre" style={{ flex: 1 }} />
+                            <input className="add-input" value={editRecursoForm.link}
+                              onChange={e => setEditRecursoForm(p => ({ ...p, link: e.target.value }))}
+                              placeholder="URL" style={{ flex: 2 }}
+                              onKeyDown={e => { if (e.key === "Enter") saveRecurso(sc.id, idx, editRecursoForm); if (e.key === "Escape") setEditandoRecurso(null); }} />
+                          </div>
+                          <div style={{ display: "flex", gap: 8 }}>
+                            <button className="btn" onClick={() => saveRecurso(sc.id, idx, editRecursoForm)}
+                              style={{ background: "linear-gradient(135deg, #0D9488, #0891B2)", color: "#fff", padding: "7px 16px", borderRadius: 8, fontSize: 12, fontWeight: 700 }}>
+                              Guardar
+                            </button>
+                            <button className="btn" onClick={() => setEditandoRecurso(null)}
+                              style={{ background: "#F1F5F9", color: "#64748B", padding: "7px 16px", borderRadius: 8, fontSize: 12, fontWeight: 600 }}>
+                              Cancelar
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                          <div style={{ background: catCfg.bg, color: catCfg.color, fontSize: 10, fontWeight: 700, padding: "3px 9px", borderRadius: 20, whiteSpace: "nowrap", flexShrink: 0 }}>
+                            {rec.categoria}
                           </div>
                           <a href={rec.link} target="_blank" rel="noopener noreferrer"
-                            style={{ color: sc.color, fontSize: 14, textDecoration: "none", flexShrink: 0 }} title="Abrir enlace">↗</a>
+                            style={{ flex: 1, fontSize: 13, fontWeight: 600, color: "#334155", textDecoration: "none", display: "flex", alignItems: "center", gap: 5 }}>
+                            {rec.nombre} <span style={{ color: sc.color }}>↗</span>
+                          </a>
+                          <button className="del-btn" title="Editar"
+                            onClick={() => { setEditandoRecurso(idx); setEditRecursoForm({ nombre: rec.nombre, link: rec.link }); }}>✏</button>
+                          <button className="del-btn" onClick={() => deleteRecurso(sc.id, idx)}>✕</button>
                         </div>
-                        <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 3 }}>
-                          <EditableText value={rec.link} onSave={v => editRecurso(sc.id, idx, "link", v)} />
-                        </div>
-                      </div>
-                      <button className="del-btn" onClick={() => deleteRecurso(sc.id, idx)}>✕</button>
+                      )}
                     </div>
                   );
                 })}
