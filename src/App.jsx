@@ -338,13 +338,17 @@ export default function PanelConsultoria() {
   const [nuevoRecurso, setNuevoRecurso] = useState({ nombre: "", link: "", categoria: "Otro" });
   const [editandoRecurso, setEditandoRecurso] = useState(null);
   const [editRecursoForm, setEditRecursoForm] = useState({ nombre: "", link: "" });
+  const [printEntry, setPrintEntry] = useState(null);
 
   useEffect(() => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(clients)); } catch {}
   }, [clients]);
 
+  useEffect(() => {
+    if (printEntry) { window.print(); setPrintEntry(null); }
+  }, [printEntry]);
+
   const sc = clients.find(c => c.id === selected);
-  const printEntry = sc?.historial?.[0] ?? null;
   const totalMias = clients.reduce((a, c) => a + c.misTareas.filter(t => !t.done).length, 0);
   const totalClientes = clients.reduce((a, c) => a + c.tareasCliente.filter(t => !t.done).length, 0);
   const proxima = [...clients].sort((a, b) => new Date(a.proximaReunion) - new Date(b.proximaReunion))[0];
@@ -577,8 +581,8 @@ export default function PanelConsultoria() {
                     style={{ background: "linear-gradient(135deg, #0D9488, #0891B2)", color: "#fff", padding: "10px 20px", borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: "0 4px 16px rgba(13,148,136,.3)" }}>
                     + Actualizar reunión
                   </button>
-                  {printEntry && (
-                    <button className="btn" onClick={() => window.print()}
+                  {sc.historial && sc.historial.length > 0 && (
+                    <button className="btn" onClick={() => setPrintEntry(sc.historial[0])}
                       style={{ background: "#F8FAFC", color: "#64748B", padding: "8px 18px", borderRadius: 12, fontSize: 12, fontWeight: 600, border: "1px solid #E2E8F0" }}>
                       ⬇ Descargar PDF
                     </button>
@@ -788,6 +792,10 @@ export default function PanelConsultoria() {
                       <div style={{ fontSize: 13, fontWeight: 700, color: sc.color }}>
                         {new Date(entry.fecha).toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
                       </div>
+                      <button className="btn" onClick={() => setPrintEntry(entry)}
+                        style={{ marginLeft: "auto", background: "#F8FAFC", color: "#64748B", padding: "4px 12px", borderRadius: 8, fontSize: 11, fontWeight: 600, border: "1px solid #E2E8F0" }}>
+                        ⬇ PDF
+                      </button>
                     </div>
                     <div style={{ background: "#F8FAFC", borderRadius: 12, padding: "12px 16px", marginBottom: 12, borderLeft: `3px solid ${sc.color}` }}>
                       <div style={{ fontSize: 11, color: "#94A3B8", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 6 }}>Resumen</div>
