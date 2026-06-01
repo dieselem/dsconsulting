@@ -344,6 +344,7 @@ export default function PanelConsultoria() {
   }, [clients]);
 
   const sc = clients.find(c => c.id === selected);
+  const printEntry = sc?.historial?.[0] ?? null;
   const totalMias = clients.reduce((a, c) => a + c.misTareas.filter(t => !t.done).length, 0);
   const totalClientes = clients.reduce((a, c) => a + c.tareasCliente.filter(t => !t.done).length, 0);
   const proxima = [...clients].sort((a, b) => new Date(a.proximaReunion) - new Date(b.proximaReunion))[0];
@@ -433,6 +434,29 @@ export default function PanelConsultoria() {
         .add-input:focus{border-color:#0D9488;border-style:solid;background:#F0FDFA;color:#0F172A}
         textarea{font-family:inherit;outline:none;resize:none}
         input{font-family:inherit;outline:none}
+        #print-area{display:none}
+        @media print{
+          body *{visibility:hidden}
+          #print-area{display:block!important;visibility:visible;position:absolute;top:0;left:0;width:100%;padding:48px 56px;box-sizing:border-box;background:#fff;font-family:Georgia,'Times New Roman',serif;color:#0F172A}
+          #print-area *{visibility:visible}
+          .pnt-hdr{display:flex;align-items:center;gap:12px;padding-bottom:16px;border-bottom:2.5px solid #0D9488;margin-bottom:26px}
+          .pnt-hdr img{width:36px;height:36px;object-fit:contain}
+          .pnt-hdr-name{font-size:18px;font-weight:700;font-family:Outfit,sans-serif;color:#0F172A}
+          .pnt-cli{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+          .pnt-cli img{width:44px;height:44px;object-fit:contain}
+          .pnt-cli-name{font-size:22px;font-weight:700;font-family:Outfit,sans-serif;color:#0F172A;line-height:1.2}
+          .pnt-cli-sub{font-size:12px;color:#64748B;margin-top:3px}
+          .pnt-fecha{font-size:13px;color:#64748B;margin-bottom:22px}
+          .pnt-hr{border:none;border-top:1px solid #E2E8F0;margin:18px 0}
+          .pnt-sec{margin-bottom:20px}
+          .pnt-lbl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#0D9488;font-family:Outfit,sans-serif;margin-bottom:7px}
+          .pnt-txt{font-size:13px;line-height:1.75;color:#334155}
+          .pnt-lst{margin:0;padding-left:18px}
+          .pnt-lst li{font-size:13px;line-height:1.75;color:#334155;margin-bottom:3px}
+          .pnt-prx{font-size:13px;color:#334155;margin-top:20px;padding-top:14px;border-top:1px solid #E2E8F0}
+          .pnt-prx strong{font-weight:700;color:#0F172A}
+          .pnt-ftr{margin-top:48px;font-size:10px;color:#94A3B8;text-align:center;padding-top:14px;border-top:1px solid #E2E8F0;font-family:Outfit,sans-serif}
+        }
       `}</style>
 
       {/* Header */}
@@ -548,10 +572,18 @@ export default function PanelConsultoria() {
                     <div style={{ display: "inline-block", background: (etapaConfig[sc.etapa]?.bg || "#F1F5F9"), color: (etapaConfig[sc.etapa]?.color || "#64748B"), fontSize: 11, fontWeight: 700, padding: "3px 12px", borderRadius: 20, marginTop: 8 }}>{sc.etapa}</div>
                   </div>
                 </div>
-                <button className="btn" onClick={() => setView("update")}
-                  style={{ background: "linear-gradient(135deg, #0D9488, #0891B2)", color: "#fff", padding: "10px 20px", borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: "0 4px 16px rgba(13,148,136,.3)" }}>
-                  + Actualizar reunión
-                </button>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
+                  <button className="btn" onClick={() => setView("update")}
+                    style={{ background: "linear-gradient(135deg, #0D9488, #0891B2)", color: "#fff", padding: "10px 20px", borderRadius: 12, fontSize: 13, fontWeight: 700, boxShadow: "0 4px 16px rgba(13,148,136,.3)" }}>
+                    + Actualizar reunión
+                  </button>
+                  {printEntry && (
+                    <button className="btn" onClick={() => window.print()}
+                      style={{ background: "#F8FAFC", color: "#64748B", padding: "8px 18px", borderRadius: 12, fontSize: 12, fontWeight: 600, border: "1px solid #E2E8F0" }}>
+                      ⬇ Descargar PDF
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div style={{ marginTop: 20, background: "#F8FAFC", borderRadius: 14, padding: "14px 18px", borderLeft: `4px solid ${sc.color}` }}>
@@ -842,6 +874,64 @@ export default function PanelConsultoria() {
           </div>
         )}
       </div>
+
+    {/* ÁREA DE IMPRESIÓN — solo visible al imprimir */}
+    {printEntry && sc && (
+      <div id="print-area">
+        <div className="pnt-hdr">
+          <img src="/logos/ds.png" alt="DS" />
+          <span className="pnt-hdr-name">DS Consultoría</span>
+        </div>
+        <div className="pnt-cli">
+          {sc.logo && <img src={sc.logo} alt={sc.name} />}
+          <div>
+            <div className="pnt-cli-name">{sc.name}</div>
+            <div className="pnt-cli-sub">{sc.rubro} · {sc.etapa}</div>
+          </div>
+        </div>
+        <div className="pnt-fecha">
+          Reunión del {new Date(printEntry.fecha + "T12:00").toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+        </div>
+        <hr className="pnt-hr" />
+        <div className="pnt-sec">
+          <div className="pnt-lbl">Resumen de la reunión</div>
+          <div className="pnt-txt">{printEntry.resumen}</div>
+        </div>
+        {printEntry.misTareas && printEntry.misTareas.length > 0 && (
+          <div className="pnt-sec">
+            <div className="pnt-lbl">Tareas pendientes (Diego)</div>
+            <ul className="pnt-lst">
+              {printEntry.misTareas.map((t, i) => <li key={i}>{t}</li>)}
+            </ul>
+          </div>
+        )}
+        {printEntry.tareasCliente && printEntry.tareasCliente.length > 0 && (
+          <div className="pnt-sec">
+            <div className="pnt-lbl">Tareas del cliente</div>
+            <ul className="pnt-lst">
+              {printEntry.tareasCliente.map((t, i) => <li key={i}>{t}</li>)}
+            </ul>
+          </div>
+        )}
+        {printEntry.focoReunion && (
+          <div className="pnt-sec">
+            <div className="pnt-lbl">Foco de la próxima reunión</div>
+            <div className="pnt-txt">{printEntry.focoReunion}</div>
+          </div>
+        )}
+        {sc.proximaReunion && (
+          <div className="pnt-prx">
+            <strong>Próxima reunión: </strong>
+            {new Date(sc.proximaReunion.length > 10 ? sc.proximaReunion : sc.proximaReunion + "T12:00")
+              .toLocaleDateString("es-AR", {
+                weekday: "long", day: "numeric", month: "long", year: "numeric",
+                ...(sc.proximaReunion.length > 10 ? { hour: "2-digit", minute: "2-digit" } : {})
+              })}
+          </div>
+        )}
+        <div className="pnt-ftr">Diego Selem — DS Consultoría</div>
+      </div>
+    )}
     </div>
   );
 }
