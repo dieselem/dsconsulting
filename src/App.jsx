@@ -238,12 +238,26 @@ const categoriaConfig = {
 };
 
 const etapaConfig = {
-  "Diagnóstico": { color: "#2563EB", bg: "#EFF6FF" },
-  "Inicio": { color: "#D97706", bg: "#FFFBEB" },
-  "En curso": { color: "#0891B2", bg: "#ECFEFF" },
+  "Potencial":    { color: "#64748B", bg: "#F1F5F9" },
+  "Diagnóstico":  { color: "#2563EB", bg: "#EFF6FF" },
+  "Inicio":       { color: "#D97706", bg: "#FFFBEB" },
+  "En curso":     { color: "#0891B2", bg: "#ECFEFF" },
   "Implementación": { color: "#059669", bg: "#ECFDF5" },
-  "Seguimiento": { color: "#7C3AED", bg: "#F5F3FF" },
+  "Seguimiento":  { color: "#7C3AED", bg: "#F5F3FF" },
 };
+
+const colorPalette = [
+  { color: "#0891B2", accent: "#ECFEFF" },
+  { color: "#0D9488", accent: "#F0FDFA" },
+  { color: "#7C3AED", accent: "#F5F3FF" },
+  { color: "#DC2626", accent: "#FEF2F2" },
+  { color: "#059669", accent: "#ECFDF5" },
+  { color: "#D97706", accent: "#FFFBEB" },
+  { color: "#2563EB", accent: "#EFF6FF" },
+  { color: "#EA580C", accent: "#FFF7ED" },
+  { color: "#DB2777", accent: "#FDF2F8" },
+  { color: "#64748B", accent: "#F1F5F9" },
+];
 
 function getDaysUntil(dateStr) {
   if (!dateStr) return 0;
@@ -339,6 +353,11 @@ export default function PanelConsultoria() {
   const [editandoRecurso, setEditandoRecurso] = useState(null);
   const [editRecursoForm, setEditRecursoForm] = useState({ nombre: "", link: "" });
   const [printEntry, setPrintEntry] = useState(null);
+  const [showNuevoCliente, setShowNuevoCliente] = useState(false);
+  const [nuevoClienteForm, setNuevoClienteForm] = useState({
+    name: "", rubro: "", via: "Directa", etapa: "Potencial", fecha: "", horario: "",
+    color: "#0891B2", accent: "#ECFEFF",
+  });
 
   useEffect(() => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(clients)); } catch {}
@@ -374,6 +393,35 @@ export default function PanelConsultoria() {
     const link = form.link.trim().match(/^https?:\/\//) ? form.link.trim() : "https://" + form.link.trim();
     upd(id, c => ({ ...c, recursos: c.recursos.map((r, i) => i === idx ? { ...r, nombre: form.nombre.trim(), link } : r) }));
     setEditandoRecurso(null);
+  }
+
+  function guardarNuevoCliente() {
+    if (!nuevoClienteForm.name.trim() || !nuevoClienteForm.fecha) return;
+    const proximaReunion = nuevoClienteForm.horario
+      ? `${nuevoClienteForm.fecha}T${nuevoClienteForm.horario}`
+      : nuevoClienteForm.fecha;
+    const newId = Math.max(...clients.map(c => c.id), 0) + 1;
+    setClients(prev => [...prev, {
+      id: newId,
+      name: nuevoClienteForm.name.trim(),
+      rubro: nuevoClienteForm.rubro.trim(),
+      via: nuevoClienteForm.via,
+      etapa: nuevoClienteForm.etapa,
+      color: nuevoClienteForm.color,
+      accent: nuevoClienteForm.accent,
+      icon: "🏢",
+      logo: null,
+      historial: [],
+      recursos: [],
+      ultimoAvance: "",
+      misTareas: [],
+      tareasCliente: [],
+      proximaReunion,
+      focoReunion: "",
+      iniciativas: [],
+    }]);
+    setShowNuevoCliente(false);
+    setNuevoClienteForm({ name: "", rubro: "", via: "Directa", etapa: "Potencial", fecha: "", horario: "", color: "#0891B2", accent: "#ECFEFF" });
   }
 
   async function procesarUpdate() {
@@ -517,8 +565,20 @@ export default function PanelConsultoria() {
             </div>
           )}
 
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+            <div style={{ fontSize: 13, color: "#94A3B8", fontWeight: 600 }}>{clients.length} cliente{clients.length !== 1 ? "s" : ""}</div>
+            <button className="btn" onClick={() => setShowNuevoCliente(true)}
+              style={{ background: "linear-gradient(135deg, #0D9488, #0891B2)", color: "#fff", padding: "9px 20px", borderRadius: 12, fontSize: 13, fontWeight: 700, display: "flex", alignItems: "center", gap: 6, boxShadow: "0 4px 16px rgba(13,148,136,.3)" }}>
+              + Nuevo cliente
+            </button>
+          </div>
+
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 20 }}>
-            {clients.map(c => {
+            {[...clients].sort((a, b) => {
+              const da = new Date(a.proximaReunion ? (a.proximaReunion.length > 10 ? a.proximaReunion : a.proximaReunion + "T12:00") : "9999-12-31");
+              const db = new Date(b.proximaReunion ? (b.proximaReunion.length > 10 ? b.proximaReunion : b.proximaReunion + "T12:00") : "9999-12-31");
+              return da - db;
+            }).map(c => {
               const pm = c.misTareas.filter(t => !t.done).length;
               const pc = c.tareasCliente.filter(t => !t.done).length;
               const dias = getDaysUntil(c.proximaReunion);
@@ -882,6 +942,109 @@ export default function PanelConsultoria() {
           </div>
         )}
       </div>
+
+    {/* MODAL NUEVO CLIENTE */}
+    {showNuevoCliente && (
+      <div onClick={() => setShowNuevoCliente(false)}
+        style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,.55)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
+        <div className="card" onClick={e => e.stopPropagation()}
+          style={{ width: "100%", maxWidth: 520, padding: 32, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 24px 64px rgba(0,0,0,.18)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 800, color: "#0F172A", letterSpacing: "-0.3px" }}>Nuevo cliente</div>
+            <button className="btn" onClick={() => setShowNuevoCliente(false)}
+              style={{ background: "#F1F5F9", color: "#64748B", width: 32, height: 32, borderRadius: 8, fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
+          </div>
+
+          {/* Nombre */}
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 6 }}>Nombre *</div>
+            <input className="add-input" placeholder="Ej: Love Chuka" value={nuevoClienteForm.name}
+              onChange={e => setNuevoClienteForm(p => ({ ...p, name: e.target.value }))}
+              style={{ width: "100%", borderStyle: "solid", background: "#fff", border: "1.5px solid #E2E8F0" }} autoFocus />
+          </div>
+
+          {/* Rubro */}
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 6 }}>Rubro</div>
+            <input className="add-input" placeholder="Ej: Retail indumentaria" value={nuevoClienteForm.rubro}
+              onChange={e => setNuevoClienteForm(p => ({ ...p, rubro: e.target.value }))}
+              style={{ width: "100%", borderStyle: "solid", background: "#fff", border: "1.5px solid #E2E8F0" }} />
+          </div>
+
+          {/* Vía + Etapa */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 6 }}>Vía</div>
+              <select value={nuevoClienteForm.via} onChange={e => setNuevoClienteForm(p => ({ ...p, via: e.target.value }))}
+                style={{ width: "100%", background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: 10, padding: "9px 14px", fontSize: 13, fontFamily: "inherit", color: "#0F172A", outline: "none", cursor: "pointer" }}>
+                {["Directa", "PCH", "Propio"].map(v => <option key={v}>{v}</option>)}
+              </select>
+            </div>
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 6 }}>Etapa</div>
+              <select value={nuevoClienteForm.etapa} onChange={e => setNuevoClienteForm(p => ({ ...p, etapa: e.target.value }))}
+                style={{ width: "100%", background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: 10, padding: "9px 14px", fontSize: 13, fontFamily: "inherit", color: "#0F172A", outline: "none", cursor: "pointer" }}>
+                {["Potencial", "Diagnóstico", "Inicio", "En curso", "Implementación", "Seguimiento"].map(v => <option key={v}>{v}</option>)}
+              </select>
+            </div>
+          </div>
+
+          {/* Fecha + Horario */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 }}>
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 6 }}>Próxima reunión *</div>
+              <input type="date" value={nuevoClienteForm.fecha}
+                onChange={e => setNuevoClienteForm(p => ({ ...p, fecha: e.target.value }))}
+                style={{ width: "100%", background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: 10, padding: "9px 14px", fontSize: 13, fontFamily: "inherit", color: "#0F172A", outline: "none", cursor: "pointer" }} />
+            </div>
+            <div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 6 }}>Horario <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0 }}>(opcional)</span></div>
+              <input type="time" value={nuevoClienteForm.horario}
+                onChange={e => setNuevoClienteForm(p => ({ ...p, horario: e.target.value }))}
+                style={{ width: "100%", background: "#fff", border: "1.5px solid #E2E8F0", borderRadius: 10, padding: "9px 14px", fontSize: 13, fontFamily: "inherit", color: "#0F172A", outline: "none", cursor: "pointer" }} />
+            </div>
+          </div>
+
+          {/* Color */}
+          <div style={{ marginBottom: 28 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 10 }}>Color de la card</div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {colorPalette.map(({ color, accent }) => (
+                <div key={color} onClick={() => setNuevoClienteForm(p => ({ ...p, color, accent }))}
+                  style={{ width: 30, height: 30, borderRadius: 8, background: color, cursor: "pointer", flexShrink: 0,
+                    outline: nuevoClienteForm.color === color ? `3px solid ${color}` : "none",
+                    outlineOffset: 2,
+                    boxShadow: nuevoClienteForm.color === color ? `0 0 0 2px #fff, 0 0 0 4px ${color}` : "none",
+                    transform: nuevoClienteForm.color === color ? "scale(1.15)" : "scale(1)",
+                    transition: "all .15s" }} />
+              ))}
+            </div>
+          </div>
+
+          {/* Preview */}
+          <div style={{ background: "#F8FAFC", borderRadius: 14, padding: "12px 16px", marginBottom: 24, borderLeft: `4px solid ${nuevoClienteForm.color}`, display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ width: 36, height: 36, background: nuevoClienteForm.accent, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>🏢</div>
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#0F172A" }}>{nuevoClienteForm.name || "Nombre del cliente"}</div>
+              <div style={{ fontSize: 12, color: "#94A3B8" }}>{nuevoClienteForm.rubro || "Rubro"} · {nuevoClienteForm.via}</div>
+            </div>
+            <div style={{ marginLeft: "auto", background: (etapaConfig[nuevoClienteForm.etapa]?.bg || "#F1F5F9"), color: (etapaConfig[nuevoClienteForm.etapa]?.color || "#64748B"), fontSize: 11, fontWeight: 700, padding: "3px 10px", borderRadius: 20 }}>{nuevoClienteForm.etapa}</div>
+          </div>
+
+          <div style={{ display: "flex", gap: 10 }}>
+            <button className="btn" onClick={guardarNuevoCliente}
+              disabled={!nuevoClienteForm.name.trim() || !nuevoClienteForm.fecha}
+              style={{ flex: 1, background: !nuevoClienteForm.name.trim() || !nuevoClienteForm.fecha ? "#E2E8F0" : "linear-gradient(135deg, #0D9488, #0891B2)", color: !nuevoClienteForm.name.trim() || !nuevoClienteForm.fecha ? "#94A3B8" : "#fff", padding: "12px", borderRadius: 12, fontSize: 14, fontWeight: 700, boxShadow: !nuevoClienteForm.name.trim() || !nuevoClienteForm.fecha ? "none" : "0 4px 16px rgba(13,148,136,.3)" }}>
+              Guardar cliente
+            </button>
+            <button className="btn" onClick={() => setShowNuevoCliente(false)}
+              style={{ background: "#F1F5F9", color: "#64748B", padding: "12px 20px", borderRadius: 12, fontSize: 14, fontWeight: 600 }}>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
 
     {/* ÁREA DE IMPRESIÓN — solo visible al imprimir */}
     {printEntry && sc && (
